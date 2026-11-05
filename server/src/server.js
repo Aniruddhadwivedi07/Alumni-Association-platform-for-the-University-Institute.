@@ -1,23 +1,8 @@
 require('dotenv').config();
-const express = require('express');
+const { createApp } = require('./app');
 
-const app = express();
+const app = createApp();
 const PORT = process.env.PORT || 5000;
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: 'Alumni Association API Backend'
-  });
-});
-
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
-    service: 'Alumni Association API'
-  });
-});
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
@@ -26,4 +11,5 @@ const server = app.listen(PORT, () => {
 server.on('error', (err) => {
   console.error(`Server error: ${err.message}`);
 });
+
 
