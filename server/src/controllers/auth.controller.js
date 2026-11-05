@@ -100,7 +100,157 @@ async function register(req, res, next) {
   }
 }
 
-module.exports = {
-  register
-};
+async function login(req, res, next) {
+  try {
+    const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
+    // Look up user by email
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      include: {
+        role: true,
+        alumniProfile: true
+      }
+    });
+
+    // Constant-time compare or generic 401 for non-existent users
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Invalid email or password'
+        }
+      });
+    }
+
+    // Verify password using bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Invalid email or password'
+        }
+      });
+    }
+
+    // Check if account is active
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Account is inactive'
+        }
+      });
+    }
+
+    // Regenerate session to prevent session fixation attacks
+    req.session.regenerate((err) => {
+      if (err) {
+        return next(err);
+      }
+
+      // Store only necessary user identity data in the session
+      req.session.userId = user.id;
+
+      // Save session explicitly before sending response
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          return next(saveErr);
+        }
+
+        return res.status(200).json({
+          success: true,
+          data: {
+            id: user.id,
+            email: user.email,
+            role: user.role.name,
+            isActive: user.isActive,
+            profile: user.alumniProfile
+              ? {
+                  id: user.alumniProfile.id,
+                  fullName: user.alumniProfile.fullName,
+                  graduationYear: user.alumniProfile.graduationYear,
+                  department: user.alumniProfile.department
+                }
+              : null,
+            createdAt: user.createdAt
+          },
+          message: 'Login successful'
+        });
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function logout(req, res, next) {
+  try {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    };
+
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.clearCookie('sid', cookieOptions);
+        return res.status(200).json({
+          success: true,
+          message: 'Logout successful'
+        });
+      });
+    } else {
+      res.clearCookie('sid', cookieOptions);
+      return res.status(200).json({
+        success: true,
+        message: 'Logout successful'
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function me(req, res, next) {
+  try {
+    // req.user was fetched fresh from DB by requireAuth middleware
+    const user = req.user;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        id: user.id,
+        email: user.email,
+        role: user.role.name,
+        isActive: user.isActive,
+        profile: user.alumniProfile
+          ? {
+              id: user.alumniProfile.id,
+              fullName: user.alumniProfile.fullName,
+              graduationYear: user.alumniProfile.graduationYear,
+              department: user.alumniProfile.department
+            }
+          : null,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  logout,
+  me
+};

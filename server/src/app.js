@@ -1,11 +1,20 @@
 const express = require('express');
 const authRoutes = require('./routes/auth.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
+const { sessionMiddleware } = require('./config/session');
 
 function createApp() {
   const app = express();
 
+  // If in production and behind a reverse proxy (e.g. Nginx/Render/Heroku), trust the first proxy hop
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
   app.use(express.json());
+
+  // Register session middleware before routes that access it
+  app.use(sessionMiddleware());
 
   app.get('/', (req, res) => {
     res.status(200).json({
@@ -32,4 +41,3 @@ function createApp() {
 module.exports = {
   createApp
 };
-
