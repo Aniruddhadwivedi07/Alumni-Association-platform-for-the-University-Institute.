@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/profile.routes');
+const directoryRoutes = require('./routes/directory.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -35,6 +36,9 @@ function createApp() {
 
   // Profile routes
   app.use('/api/profile', profileRoutes);
+
+  // Directory routes
+  app.use('/api/directory', directoryRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
