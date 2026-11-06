@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const prisma = require('../prisma');
+const { ROLES } = require('../constants/roles');
 
 const SALT_ROUNDS = 10;
 
@@ -12,7 +13,7 @@ async function register(req, res, next) {
 
     // Look up the default STUDENT role
     const studentRole = await prisma.role.findUnique({
-      where: { name: 'STUDENT' }
+      where: { name: ROLES.STUDENT }
     });
 
     if (!studentRole) {
