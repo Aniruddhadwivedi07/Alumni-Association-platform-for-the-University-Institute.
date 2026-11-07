@@ -16,6 +16,7 @@ export default function Navbar() {
         <div id="navigation-links" className={`${open ? 'flex' : 'hidden'} w-full flex-col gap-2 md:flex md:w-auto md:flex-row`}>
           <NavLink to="/" end onClick={() => setOpen(false)} className={linkClass}>Home</NavLink>
           <NavLink to="/about" onClick={() => setOpen(false)} className={linkClass}>About</NavLink>
+          <NavLink to="/directory" onClick={() => setOpen(false)} className={linkClass}>Directory</NavLink>
           <NavLink to="/register" onClick={() => setOpen(false)} className={linkClass}>Register</NavLink>
           {session ? <><NavLink to="/profile" onClick={() => setOpen(false)} className={linkClass}>My profile</NavLink><button onClick={() => { logout(); setOpen(false); navigate('/') }} className="rounded px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100">Log out</button></> : <NavLink to="/login" onClick={() => setOpen(false)} className={linkClass}>Sign in</NavLink>}
         </div>
