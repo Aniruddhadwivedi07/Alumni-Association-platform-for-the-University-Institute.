@@ -13,6 +13,7 @@ export default function Navbar() {
         <div id="navigation-links" className={`${open ? 'flex' : 'hidden'} w-full flex-col gap-2 md:flex md:w-auto md:flex-row`}>
           <NavLink to="/" end onClick={() => setOpen(false)} className={linkClass}>Home</NavLink>
           <NavLink to="/about" onClick={() => setOpen(false)} className={linkClass}>About</NavLink>
+          <NavLink to="/register" onClick={() => setOpen(false)} className={linkClass}>Register</NavLink>
         </div>
       </nav>
     </header>
