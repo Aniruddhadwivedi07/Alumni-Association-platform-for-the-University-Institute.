@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { session, logout } = useAuth()
+  const navigate = useNavigate()
   const linkClass = ({ isActive }) => `rounded px-3 py-2 text-sm font-semibold ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`
 
   return (
@@ -14,6 +17,7 @@ export default function Navbar() {
           <NavLink to="/" end onClick={() => setOpen(false)} className={linkClass}>Home</NavLink>
           <NavLink to="/about" onClick={() => setOpen(false)} className={linkClass}>About</NavLink>
           <NavLink to="/register" onClick={() => setOpen(false)} className={linkClass}>Register</NavLink>
+          {session ? <><NavLink to="/profile" onClick={() => setOpen(false)} className={linkClass}>My profile</NavLink><button onClick={() => { logout(); setOpen(false); navigate('/') }} className="rounded px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100">Log out</button></> : <NavLink to="/login" onClick={() => setOpen(false)} className={linkClass}>Sign in</NavLink>}
         </div>
       </nav>
     </header>
