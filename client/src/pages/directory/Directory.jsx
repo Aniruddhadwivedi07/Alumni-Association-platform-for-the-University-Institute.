@@ -9,22 +9,26 @@ export default function Directory() {
   const [year, setYear] = useState('')
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [pageCount, setPageCount] = useState(1)
+  const [total, setTotal] = useState(0)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    apiRequest('/api/alumni')
-      .then((data) => setAlumni(data.alumni || []))
+    const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) })
+    if (search.trim()) params.set('search', search.trim())
+    if (year) params.set('graduationYear', year)
+    apiRequest(`/directory/alumni?${params}`)
+      .then((data) => {
+        setAlumni(data.data || [])
+        setPageCount(data.pagination?.totalPages || 1)
+        setTotal(data.pagination?.totalRecords || 0)
+        setError('')
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }, [search, year, page])
 
-  const filtered = alumni.filter((person) => {
-    const text = `${person.fullName || ''} ${person.department || ''} ${person.currentJobTitle || ''} ${person.currentCompany || ''}`.toLowerCase()
-    return text.includes(search.toLowerCase()) && (!year || String(person.graduationYear || '') === year)
-  })
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  const years = [...new Set(alumni.map((person) => person.graduationYear).filter(Boolean))].sort((a, b) => b - a)
+  const visible = alumni
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-12">
@@ -40,7 +44,7 @@ export default function Directory() {
           <label htmlFor="directory-year" className="block text-sm font-semibold">Graduation year</label>
           <select id="directory-year" value={year} onChange={(event) => { setYear(event.target.value); setPage(1) }} className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3">
             <option value="">All years</option>
-            {years.map((value) => <option key={value} value={value}>{value}</option>)}
+            {Array.from({ length: 51 }, (_, index) => 2026 - index).map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
         </div>
       </div>
@@ -48,7 +52,7 @@ export default function Directory() {
       {error && <p role="alert" className="mt-8 rounded-lg bg-red-50 p-4 text-red-800">{error}</p>}
       {!loading && !error && (
         <>
-          <p className="mt-6 text-sm text-slate-600">{filtered.length} {filtered.length === 1 ? 'alumnus' : 'alumni'} found</p>
+          <p className="mt-6 text-sm text-slate-600">{total} {total === 1 ? 'alumnus' : 'alumni'} found</p>
           {visible.length ? (
             <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {visible.map((person) => (

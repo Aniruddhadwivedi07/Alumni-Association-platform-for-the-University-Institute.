@@ -1,10 +1,9 @@
 require('dotenv').config();
 const prisma = require('../src/prisma');
-
-const ROLES = ['STUDENT', 'ALUMNI', 'ADMIN'];
+const { ROLES } = require('../src/constants/roles');
 
 async function main() {
-  for (const name of ROLES) {
+  for (const name of Object.values(ROLES)) {
     await prisma.role.upsert({
       where: { name },
       update: {},

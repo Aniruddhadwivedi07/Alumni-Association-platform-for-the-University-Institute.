@@ -11,9 +11,6 @@ const fields = [
   ['email', 'Email address', 'email'],
   ['graduationYear', 'Graduation year', 'number'],
   ['department', 'Department', 'text'],
-  ['currentJobTitle', 'Current job title', 'text'],
-  ['currentCompany', 'Current company', 'text'],
-  ['linkedinUrl', 'LinkedIn profile URL', 'url'],
 ]
 
 export default function Register() {
@@ -33,11 +30,11 @@ export default function Register() {
     if (Object.keys(nextErrors).length) return
     setStatus({ loading: true, message: '' })
     try {
-      await apiRequest('/api/auth/register', {
+      await apiRequest('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ ...values, graduationYear: values.graduationYear ? Number(values.graduationYear) : null }),
+        body: JSON.stringify({ fullName: values.fullName, email: values.email, password: values.password, graduationYear: values.graduationYear ? Number(values.graduationYear) : null, department: values.department || null }),
       })
-      navigate('/login', { state: { message: 'Registration submitted. You can sign in after your account is ready.' } })
+      navigate('/login', { state: { message: 'Registration complete. You can sign in now.' } })
     } catch (error) {
       setStatus({ loading: false, message: error.message })
     }

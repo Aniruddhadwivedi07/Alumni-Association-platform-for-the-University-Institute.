@@ -6,7 +6,6 @@ import { EMPTY_PROFILE, validateProfile } from '../../lib/profile'
 
 const profileFields = [
   ['fullName', 'Full name', 'text'],
-  ['email', 'Email address', 'email'],
   ['graduationYear', 'Graduation year', 'number'],
   ['department', 'Department', 'text'],
   ['currentJobTitle', 'Current job title', 'text'],
@@ -24,8 +23,8 @@ export default function Profile() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    apiRequest('/api/alumni/me')
-      .then((data) => setProfile({ ...EMPTY_PROFILE, ...data.profile, ...data.user }))
+    apiRequest('/profile/me')
+      .then((data) => setProfile({ ...EMPTY_PROFILE, ...data.data?.profile, email: data.data?.email || '' }))
       .catch((error) => setMessage(error.message))
       .finally(() => setLoading(false))
   }, [])
@@ -42,11 +41,11 @@ export default function Profile() {
     setSaving(true)
     setMessage('')
     try {
-      const data = await apiRequest('/api/alumni/me', {
+      const data = await apiRequest('/profile/me', {
         method: 'PUT',
-        body: JSON.stringify({ ...profile, graduationYear: profile.graduationYear ? Number(profile.graduationYear) : null }),
+        body: JSON.stringify({ fullName: profile.fullName, graduationYear: profile.graduationYear ? Number(profile.graduationYear) : null, department: profile.department || null, currentJobTitle: profile.currentJobTitle || null, currentCompany: profile.currentCompany || null, bio: profile.bio || null, linkedinUrl: profile.linkedinUrl || null }),
       })
-      setProfile({ ...profile, ...(data.profile || data) })
+      setProfile({ ...profile, ...data.data?.profile })
       setEditing(false)
       setMessage('Your profile has been saved.')
     } catch (error) {

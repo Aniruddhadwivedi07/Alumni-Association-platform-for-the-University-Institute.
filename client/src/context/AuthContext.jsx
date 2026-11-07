@@ -1,28 +1,33 @@
-import { createContext, useContext, useMemo, useState } from 'react'
-import { apiRequest, clearSession, getSession, saveSession } from '../lib/api'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { apiRequest } from '../lib/api'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(getSession)
+  const [session, setSession] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    apiRequest('/auth/me')
+      .then((result) => setSession(result.data))
+      .catch(() => setSession(null))
+      .finally(() => setLoading(false))
+  }, [])
 
   async function login(email, password) {
-    const data = await apiRequest('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
-    const nextSession = { token: data.token, user: data.user }
-    saveSession(nextSession)
-    setSession(nextSession)
+    const result = await apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) })
+    setSession(result.data)
   }
 
-  function logout() {
-    clearSession()
-    setSession(null)
+  async function logout() {
+    try {
+      await apiRequest('/auth/logout', { method: 'POST' })
+    } finally {
+      setSession(null)
+    }
   }
 
-  const value = useMemo(() => ({ session, login, logout }), [session])
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ session, loading, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

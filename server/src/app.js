@@ -1,0 +1,51 @@
+const express = require('express');
+const authRoutes = require('./routes/auth.routes');
+const profileRoutes = require('./routes/profile.routes');
+const directoryRoutes = require('./routes/directory.routes');
+const { errorHandler } = require('./middlewares/errorHandler');
+const { sessionMiddleware } = require('./config/session');
+
+function createApp() {
+  const app = express();
+
+  // If in production and behind a reverse proxy (e.g. Nginx/Render/Heroku), trust the first proxy hop
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
+  app.use(express.json());
+
+  // Register session middleware before routes that access it
+  app.use(sessionMiddleware());
+
+  app.get('/', (req, res) => {
+    res.status(200).json({
+      message: 'Alumni Association API Backend'
+    });
+  });
+
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({
+      status: 'healthy',
+      service: 'Alumni Association API'
+    });
+  });
+
+  // Auth routes
+  app.use('/api/auth', authRoutes);
+
+  // Profile routes
+  app.use('/api/profile', profileRoutes);
+
+  // Directory routes
+  app.use('/api/directory', directoryRoutes);
+
+  // Centralized error handling
+  app.use(errorHandler);
+
+  return app;
+}
+
+module.exports = {
+  createApp
+};
