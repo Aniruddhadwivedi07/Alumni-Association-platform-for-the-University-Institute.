@@ -6,6 +6,7 @@ const {
   updateJob,
   deactivateJob
 } = require('../controllers/job.controller');
+const { submitApplication } = require('../controllers/application.controller');
 const { requireAuth, authorizeRoles } = require('../middlewares/auth');
 const { validateBody, validateQuery } = require('../middlewares/validate');
 const {
@@ -13,6 +14,7 @@ const {
   updateJobSchema,
   jobQuerySchema
 } = require('../validators/job.validator');
+const { createApplicationSchema } = require('../validators/application.validator');
 const { ROLES } = require('../constants/roles');
 
 const router = express.Router();
@@ -29,6 +31,13 @@ router.post(
   authorizeRoles(ROLES.ALUMNI, ROLES.ADMIN),
   validateBody(createJobSchema),
   createJob
+);
+
+// POST /api/jobs/:jobId/applications - Submit a job application (STUDENT and ALUMNI, ADMIN blocked in controller)
+router.post(
+  '/:jobId/applications',
+  validateBody(createApplicationSchema),
+  submitApplication
 );
 
 // GET /api/jobs/:jobId - Get job details by ID (All authenticated users)

@@ -3,6 +3,7 @@ const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/profile.routes');
 const directoryRoutes = require('./routes/directory.routes');
 const jobRoutes = require('./routes/job.routes');
+const applicationRoutes = require('./routes/application.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -43,6 +44,9 @@ function createApp() {
 
   // Job routes
   app.use('/api/jobs', jobRoutes);
+
+  // Application routes
+  app.use('/api/applications', applicationRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
