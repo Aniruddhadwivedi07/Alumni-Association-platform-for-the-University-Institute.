@@ -15,15 +15,17 @@ model Role {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String          @unique
-  passwordHash  String
-  roleId        Int
-  isActive      Boolean         @default(true)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  role          Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  alumniProfile AlumniProfile?
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  passwordHash    String
+  roleId          Int
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  role            Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  alumniProfile   AlumniProfile?
+  createdJobs     Job[]            @relation("JobCreator")
+  jobApplications JobApplication[] @relation("Applicant")
 }
 
 model AlumniProfile {
@@ -39,4 +41,53 @@ model AlumniProfile {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+  @@map("session")
+}
+
+model Job {
+  id                  Int              @id @default(autoincrement())
+  title               String
+  description         String
+  company             String
+  location            String?
+  employmentType      String
+  experienceLevel     String?
+  salaryMin           Int?
+  salaryMax           Int?
+  applicationDeadline DateTime?
+  isActive            Boolean          @default(true)
+  createdById         Int
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  createdBy           User             @relation("JobCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  applications        JobApplication[]
+
+  @@index([createdById])
+  @@index([isActive])
+}
+
+model JobApplication {
+  id          Int      @id @default(autoincrement())
+  jobId       Int
+  applicantId Int
+  coverLetter String?
+  resumeUrl   String?
+  status      String   @default("PENDING")
+  appliedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant   User     @relation("Applicant", fields: [applicantId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, applicantId])
+  @@index([jobId])
+  @@index([applicantId])
+  @@index([status])
 }
