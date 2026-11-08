@@ -26,7 +26,22 @@ export default function Navbar() {
           <NavLink to="/alumni-association" onClick={close} className={linkClass}>Association</NavLink>
           <NavLink to="/contact" onClick={close} className={linkClass}>Contact</NavLink>
           <NavLink to="/directory" onClick={close} className={linkClass}>Directory</NavLink>
-          {session ? <><NavLink to="/profile" onClick={close} className={linkClass}>My profile</NavLink><button onClick={signOut} className="rounded px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100">Log out</button></> : <><NavLink to="/register" onClick={close} className={linkClass}>Register</NavLink><NavLink to="/login" onClick={close} className={linkClass}>Sign in</NavLink></>}
+          {session ? (
+            <>
+              {session.role === 'ADMIN' && (
+                <NavLink to="/admin" onClick={close} className="rounded bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100">
+                  Admin Panel
+                </NavLink>
+              )}
+              <NavLink to="/profile" onClick={close} className={linkClass}>My profile</NavLink>
+              <button onClick={signOut} className="rounded px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100">Log out</button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/register" onClick={close} className={linkClass}>Register</NavLink>
+              <NavLink to="/login" onClick={close} className={linkClass}>Sign in</NavLink>
+            </>
+          )}
         </div>
       </nav>
     </header>
