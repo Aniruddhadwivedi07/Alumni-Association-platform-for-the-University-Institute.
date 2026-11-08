@@ -12,6 +12,7 @@ import Profile from './pages/profile/Profile'
 import Directory from './pages/directory/Directory'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminVerification from './pages/admin/AdminVerification'
 import AdminPlaceholder from './pages/admin/AdminPlaceholder'
 
 export default function App() {
@@ -35,7 +36,7 @@ export default function App() {
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="verification" element={<AdminPlaceholder title="Alumni Verification" description="Review, verify, and approve incoming alumni registrations." moduleKey="admin-verification" />} />
+          <Route path="verification" element={<AdminVerification />} />
           <Route path="alumni" element={<AdminPlaceholder title="Alumni Management" description="Manage verified alumni member records, search profiles, and edit cohorts." moduleKey="admin-alumni" />} />
           <Route path="events" element={<AdminPlaceholder title="Events Management" description="Create and administer institutional alumni reunions, webinars, and regional meetups." moduleKey="admin-events" />} />
           <Route path="jobs" element={<AdminPlaceholder title="Jobs Portal Management" description="Moderate career opportunity listings, internship posts, and hiring referrals." moduleKey="admin-jobs" />} />
