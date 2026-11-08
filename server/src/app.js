@@ -2,6 +2,7 @@ const express = require('express');
 const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/profile.routes');
 const directoryRoutes = require('./routes/directory.routes');
+const jobRoutes = require('./routes/job.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -39,6 +40,9 @@ function createApp() {
 
   // Directory routes
   app.use('/api/directory', directoryRoutes);
+
+  // Job routes
+  app.use('/api/jobs', jobRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
