@@ -4,6 +4,7 @@ const profileRoutes = require('./routes/profile.routes');
 const directoryRoutes = require('./routes/directory.routes');
 const jobRoutes = require('./routes/job.routes');
 const applicationRoutes = require('./routes/application.routes');
+const eventRoutes = require('./routes/event.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -47,6 +48,9 @@ function createApp() {
 
   // Application routes
   app.use('/api/applications', applicationRoutes);
+
+  // Event routes
+  app.use('/api/events', eventRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
