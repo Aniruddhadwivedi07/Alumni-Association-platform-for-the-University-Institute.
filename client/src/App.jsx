@@ -12,6 +12,8 @@ import Profile from './pages/profile/Profile'
 import Directory from './pages/directory/Directory'
 import Jobs from './pages/jobs/Jobs'
 import JobDetails from './pages/jobs/JobDetails'
+import JobForm from './pages/jobs/JobForm'
+import MyJobs from './pages/jobs/MyJobs'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
@@ -33,6 +35,9 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/jobs/:jobId" element={<JobDetails />} />
+          <Route path="/jobs/new" element={<JobForm />} />
+          <Route path="/jobs/:jobId/edit" element={<JobForm />} />
+          <Route path="/my-jobs" element={<MyJobs />} />
         </Route>
       </Route>
 
