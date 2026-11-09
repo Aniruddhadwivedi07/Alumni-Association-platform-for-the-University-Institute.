@@ -19,6 +19,7 @@ import MyApplications from './pages/jobs/MyApplications'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
+import AdminJobs from './pages/admin/AdminJobs'
 import AdminPlaceholder from './pages/admin/AdminPlaceholder'
 
 export default function App() {
@@ -52,7 +53,7 @@ export default function App() {
           <Route path="verification" element={<AdminVerification />} />
           <Route path="alumni" element={<AdminPlaceholder title="Alumni Management" description="Manage verified alumni member records, search profiles, and edit cohorts." moduleKey="admin-alumni" />} />
           <Route path="events" element={<AdminPlaceholder title="Events Management" description="Create and administer institutional alumni reunions, webinars, and regional meetups." moduleKey="admin-events" />} />
-          <Route path="jobs" element={<AdminPlaceholder title="Jobs Portal Management" description="Moderate career opportunity listings, internship posts, and hiring referrals." moduleKey="admin-jobs" />} />
+          <Route path="jobs" element={<AdminJobs />} />
           <Route path="donations" element={<AdminPlaceholder title="Donations & Campaigns" description="Track alumni contributions, endowments, scholarship funds, and campaign progress." moduleKey="admin-donations" />} />
           <Route path="mentorship" element={<AdminPlaceholder title="Mentorship Programs" description="Oversee mentor-mentee pairings, track mentoring sessions, and review feedback." moduleKey="admin-mentorship" />} />
           <Route path="success-stories" element={<AdminPlaceholder title="Success Stories" description="Curate and publish alumni spotlights, career achievements, and institutional news." moduleKey="admin-success-stories" />} />
