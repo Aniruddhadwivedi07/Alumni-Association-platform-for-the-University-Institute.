@@ -15,17 +15,19 @@ model Role {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  email           String           @unique
-  passwordHash    String
-  roleId          Int
-  isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  role            Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  alumniProfile   AlumniProfile?
-  createdJobs     Job[]            @relation("JobCreator")
-  jobApplications JobApplication[] @relation("Applicant")
+  id                 Int                 @id @default(autoincrement())
+  email              String              @unique
+  passwordHash       String
+  roleId             Int
+  isActive           Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  role               Role                @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  alumniProfile      AlumniProfile?
+  createdJobs        Job[]               @relation("JobCreator")
+  jobApplications    JobApplication[]    @relation("Applicant")
+  createdEvents      Event[]             @relation("EventCreator")
+  eventRegistrations EventRegistration[]
 }
 
 model AlumniProfile {
@@ -89,5 +91,42 @@ model JobApplication {
   @@unique([jobId, applicantId])
   @@index([jobId])
   @@index([applicantId])
+  @@index([status])
+}
+
+model Event {
+  id                   Int                 @id @default(autoincrement())
+  title                String
+  description          String
+  location             String?
+  startDate            DateTime
+  endDate              DateTime
+  registrationDeadline DateTime?
+  capacity             Int?
+  isActive             Boolean             @default(true)
+  createdById          Int
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  createdBy            User                @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  registrations        EventRegistration[]
+
+  @@index([createdById])
+  @@index([startDate])
+  @@index([isActive])
+}
+
+model EventRegistration {
+  id           Int      @id @default(autoincrement())
+  eventId      Int
+  userId       Int
+  status       String   @default("REGISTERED")
+  registeredAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
   @@index([status])
 }
