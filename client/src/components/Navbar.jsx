@@ -27,6 +27,9 @@ export default function Navbar() {
           <NavLink to="/contact" onClick={close} className={linkClass}>Contact</NavLink>
           <NavLink to="/directory" onClick={close} className={linkClass}>Directory</NavLink>
           {session && <NavLink to="/jobs" onClick={close} className={linkClass}>Jobs</NavLink>}
+          {session && <NavLink to="/events" onClick={close} className={linkClass}>Events</NavLink>}
+          {session && <NavLink to="/my-events" onClick={close} className={linkClass}>My events</NavLink>}
+          {session && <NavLink to="/mentorship" onClick={close} className={linkClass}>Mentorship</NavLink>}
           {session && session.role !== 'ADMIN' && <NavLink to="/applications" onClick={close} className={linkClass}>Applications</NavLink>}
           {(session?.role === 'ALUMNI' || session?.role === 'ADMIN') && <NavLink to="/my-jobs" onClick={close} className={linkClass}>My jobs</NavLink>}
           {session ? (
