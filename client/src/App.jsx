@@ -18,6 +18,7 @@ import Apply from './pages/jobs/Apply'
 import MyApplications from './pages/jobs/MyApplications'
 import Events from './pages/events/Events'
 import EventDetails from './pages/events/EventDetails'
+import MyEventRegistrations from './pages/events/MyEventRegistrations'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/applications" element={<MyApplications />} />
           <Route path="/events" element={<Events />} />
           <Route path="/events/:eventId" element={<EventDetails />} />
+          <Route path="/my-events" element={<MyEventRegistrations />} />
         </Route>
       </Route>
 
