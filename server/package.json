@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "node --test test/workflow.test.js test/job-workflows.test.js",
+    "test": "node --test test/workflow.test.js test/job-workflows.test.js test/event-mentorship-workflows.test.js",
     "prisma:generate": "prisma generate",
     "db:verify": "node src/verify-db.js",
     "db:seed": "prisma db seed"
