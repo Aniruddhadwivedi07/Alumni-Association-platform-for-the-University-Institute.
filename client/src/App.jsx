@@ -24,6 +24,8 @@ import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
 import AdminJobs from './pages/admin/AdminJobs'
+import AdminEvents from './pages/admin/AdminEvents'
+import AdminMentorship from './pages/admin/AdminMentorship'
 import AdminPlaceholder from './pages/admin/AdminPlaceholder'
 
 export default function App() {
@@ -60,10 +62,10 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="verification" element={<AdminVerification />} />
           <Route path="alumni" element={<AdminPlaceholder title="Alumni Management" description="Manage verified alumni member records, search profiles, and edit cohorts." moduleKey="admin-alumni" />} />
-          <Route path="events" element={<AdminPlaceholder title="Events Management" description="Create and administer institutional alumni reunions, webinars, and regional meetups." moduleKey="admin-events" />} />
+          <Route path="events" element={<AdminEvents />} />
           <Route path="jobs" element={<AdminJobs />} />
           <Route path="donations" element={<AdminPlaceholder title="Donations & Campaigns" description="Track alumni contributions, endowments, scholarship funds, and campaign progress." moduleKey="admin-donations" />} />
-          <Route path="mentorship" element={<AdminPlaceholder title="Mentorship Programs" description="Oversee mentor-mentee pairings, track mentoring sessions, and review feedback." moduleKey="admin-mentorship" />} />
+          <Route path="mentorship" element={<AdminMentorship />} />
           <Route path="success-stories" element={<AdminPlaceholder title="Success Stories" description="Curate and publish alumni spotlights, career achievements, and institutional news." moduleKey="admin-success-stories" />} />
           <Route path="surveys" element={<AdminPlaceholder title="Feedback & Surveys" description="Design alumni feedback questionnaires, run sentiment surveys, and analyze responses." moduleKey="admin-surveys" />} />
           <Route path="users" element={<AdminPlaceholder title="User Management" description="Administer user accounts, manage role allocations, and enforce security policies." moduleKey="admin-users" />} />
