@@ -35,6 +35,7 @@ import AdminEvents from './pages/admin/AdminEvents'
 import AdminMentorship from './pages/admin/AdminMentorship'
 import AdminDonations from './pages/admin/AdminDonations'
 import AdminSurveys from './pages/admin/AdminSurveys'
+import AdminStories from './pages/admin/AdminStories'
 import AdminPlaceholder from './pages/admin/AdminPlaceholder'
 
 export default function App() {
@@ -82,7 +83,7 @@ export default function App() {
           <Route path="jobs" element={<AdminJobs />} />
           <Route path="donations" element={<AdminDonations />} />
           <Route path="mentorship" element={<AdminMentorship />} />
-          <Route path="success-stories" element={<AdminPlaceholder title="Success Stories" description="Curate and publish alumni spotlights, career achievements, and institutional news." moduleKey="admin-success-stories" />} />
+          <Route path="success-stories" element={<AdminStories />} />
           <Route path="surveys" element={<AdminSurveys />} />
           <Route path="users" element={<AdminPlaceholder title="User Management" description="Administer user accounts, manage role allocations, and enforce security policies." moduleKey="admin-users" />} />
         </Route>
