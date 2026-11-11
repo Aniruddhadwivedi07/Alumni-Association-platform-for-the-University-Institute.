@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const { Prisma } = require('@prisma/client');
 const prisma = require('../prisma');
 const { getRazorpayInstance } = require('../config/razorpay');
+const { createDonationReceiptPdf } = require('../utils/pdfReceipt');
+const { ROLES } = require('../constants/roles');
 
 /**
  * Helper: Constant-time signature comparison using crypto.timingSafeEqual
@@ -584,11 +586,502 @@ async function handleWebhook(req, res, next) {
   }
 }
 
+/**
+ * GET /api/donations/my-history
+ * Retrieve donation history for the authenticated user
+ */
+async function getMyDonationHistory(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const { page, limit } = req.query;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      donorId: userId
+    };
+
+    const [totalRecords, transactions] = await Promise.all([
+      prisma.donationTransaction.count({ where }),
+      prisma.donationTransaction.findMany({
+        where,
+        select: {
+          id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          paymentProvider: true,
+          createdAt: true,
+          updatedAt: true,
+          campaign: {
+            select: {
+              id: true,
+              title: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: limit
+      })
+    ]);
+
+    const totalPages = Math.ceil(totalRecords / limit) || 1;
+
+    const data = transactions.map((tx) => ({
+      transactionId: tx.id,
+      campaignId: tx.campaign.id,
+      campaignTitle: tx.campaign.title,
+      amount: tx.amount.toString(),
+      currency: tx.currency,
+      status: tx.status,
+      donationDate: tx.createdAt,
+      paymentProvider: tx.paymentProvider,
+      receiptAvailable: tx.status === 'SUCCESS'
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data,
+      pagination: {
+        currentPage: page,
+        pageSize: limit,
+        totalRecords,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/donations/transactions/:transactionId
+ * Retrieve details of a specific donation transaction
+ * Allowed: Donor or ADMIN
+ */
+async function getTransactionById(req, res, next) {
+  try {
+    const transactionId = parseInt(req.params.transactionId, 10);
+    if (isNaN(transactionId) || transactionId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'BAD_REQUEST',
+          message: 'Invalid transaction ID format'
+        }
+      });
+    }
+
+    const transaction = await prisma.donationTransaction.findUnique({
+      where: { id: transactionId },
+      include: {
+        campaign: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            currency: true
+          }
+        },
+        donor: {
+          select: {
+            id: true,
+            email: true,
+            alumniProfile: {
+              select: {
+                fullName: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Donation transaction not found'
+        }
+      });
+    }
+
+    const currentUser = req.user;
+    const isDonor = transaction.donorId === currentUser.id;
+    const isAdmin = currentUser.role?.name === ROLES.ADMIN;
+
+    if (!isDonor && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Access denied: You do not have permission to view this transaction'
+        }
+      });
+    }
+
+    const donorName =
+      transaction.donor?.alumniProfile?.fullName ||
+      transaction.donor?.email?.split('@')[0] ||
+      'Anonymous Donor';
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        transactionId: transaction.id,
+        amount: transaction.amount.toString(),
+        currency: transaction.currency,
+        status: transaction.status,
+        paymentProvider: transaction.paymentProvider,
+        providerOrderId: transaction.providerOrderId,
+        providerPaymentId: transaction.providerPaymentId,
+        donationDate: transaction.createdAt,
+        receiptAvailable: transaction.status === 'SUCCESS',
+        campaign: {
+          id: transaction.campaign.id,
+          title: transaction.campaign.title,
+          description: transaction.campaign.description
+        },
+        donor: {
+          id: transaction.donor.id,
+          name: donorName
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/donations/transactions/:transactionId/receipt
+ * Generate and download PDF receipt for a verified SUCCESS donation
+ * Allowed: Donor or ADMIN
+ */
+async function downloadReceipt(req, res, next) {
+  try {
+    const transactionId = parseInt(req.params.transactionId, 10);
+    if (isNaN(transactionId) || transactionId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'BAD_REQUEST',
+          message: 'Invalid transaction ID format'
+        }
+      });
+    }
+
+    const transaction = await prisma.donationTransaction.findUnique({
+      where: { id: transactionId },
+      include: {
+        campaign: {
+          select: {
+            id: true,
+            title: true
+          }
+        },
+        donor: {
+          select: {
+            id: true,
+            email: true,
+            alumniProfile: {
+              select: {
+                fullName: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Donation transaction not found'
+        }
+      });
+    }
+
+    const currentUser = req.user;
+    const isDonor = transaction.donorId === currentUser.id;
+    const isAdmin = currentUser.role?.name === ROLES.ADMIN;
+
+    if (!isDonor && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Access denied: You do not have permission to download this receipt'
+        }
+      });
+    }
+
+    // Only verified SUCCESS transactions can receive a receipt
+    if (transaction.status !== 'SUCCESS') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'RECEIPT_NOT_AVAILABLE',
+          message: `Receipt is only available for successful donations. Current status: ${transaction.status}`
+        }
+      });
+    }
+
+    const donorName =
+      transaction.donor?.alumniProfile?.fullName ||
+      transaction.donor?.email?.split('@')[0] ||
+      'Valued Donor';
+
+    const receiptNumber = `RCPT-${transaction.id.toString().padStart(6, '0')}`;
+
+    const pdfDoc = createDonationReceiptPdf({
+      receiptNumber,
+      donorName,
+      donorEmail: transaction.donor?.email,
+      amount: transaction.amount.toString(),
+      currency: transaction.currency,
+      campaignTitle: transaction.campaign.title,
+      donationDate: transaction.createdAt,
+      paymentReference: transaction.providerPaymentId || transaction.providerOrderId || `TXN-${transaction.id}`,
+      paymentStatus: transaction.status,
+      paymentProvider: transaction.paymentProvider,
+      institutionName: 'Alumni Association Platform'
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="donation-receipt-${receiptNumber}.pdf"`
+    );
+
+    pdfDoc.pipe(res);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/admin/donations
+ * Administrative overview of all donations across all donors with filters & pagination
+ * Allowed: ADMIN only
+ */
+async function getAdminDonations(req, res, next) {
+  try {
+    const { status, campaignId, startDate, endDate, page, limit } = req.query;
+    const skip = (page - 1) * limit;
+
+    const where = {};
+
+    if (status) {
+      where.status = status;
+    }
+
+    if (campaignId) {
+      where.campaignId = campaignId;
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) {
+        where.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.createdAt.lte = new Date(endDate);
+      }
+    }
+
+    const [totalRecords, transactions] = await Promise.all([
+      prisma.donationTransaction.count({ where }),
+      prisma.donationTransaction.findMany({
+        where,
+        select: {
+          id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          paymentProvider: true,
+          providerOrderId: true,
+          providerPaymentId: true,
+          createdAt: true,
+          updatedAt: true,
+          campaign: {
+            select: {
+              id: true,
+              title: true
+            }
+          },
+          donor: {
+            select: {
+              id: true,
+              email: true,
+              role: {
+                select: {
+                  name: true
+                }
+              },
+              alumniProfile: {
+                select: {
+                  fullName: true
+                }
+              }
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: limit
+      })
+    ]);
+
+    const totalPages = Math.ceil(totalRecords / limit) || 1;
+
+    const data = transactions.map((tx) => ({
+      transactionId: tx.id,
+      amount: tx.amount.toString(),
+      currency: tx.currency,
+      status: tx.status,
+      paymentProvider: tx.paymentProvider,
+      providerOrderId: tx.providerOrderId,
+      providerPaymentId: tx.providerPaymentId,
+      donationDate: tx.createdAt,
+      receiptAvailable: tx.status === 'SUCCESS',
+      campaign: {
+        id: tx.campaign.id,
+        title: tx.campaign.title
+      },
+      donor: {
+        id: tx.donor.id,
+        email: tx.donor.email,
+        role: tx.donor.role?.name,
+        fullName: tx.donor.alumniProfile?.fullName || null
+      }
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data,
+      pagination: {
+        currentPage: page,
+        pageSize: limit,
+        totalRecords,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/admin/donations/summary
+ * Administrative statistical summary of donations
+ * Allowed: ADMIN only
+ */
+async function getAdminDonationSummary(req, res, next) {
+  try {
+    // 1. Count by status
+    const [totalSuccessfulDonations, totalPendingTransactions, totalFailedTransactions] =
+      await Promise.all([
+        prisma.donationTransaction.count({ where: { status: 'SUCCESS' } }),
+        prisma.donationTransaction.count({ where: { status: 'PENDING' } }),
+        prisma.donationTransaction.count({ where: { status: 'FAILED' } })
+      ]);
+
+    // 2. Sum raised amounts grouped by currency for SUCCESS transactions
+    const raisedByCurrency = await prisma.donationTransaction.groupBy({
+      by: ['currency'],
+      where: { status: 'SUCCESS' },
+      _sum: {
+        amount: true
+      },
+      _count: {
+        _all: true
+      }
+    });
+
+    const totalRaisedByCurrency = raisedByCurrency.map((item) => ({
+      currency: item.currency,
+      totalRaised: item._sum.amount ? item._sum.amount.toString() : '0.00',
+      count: item._count._all
+    }));
+
+    // 3. Totals grouped by campaign for SUCCESS transactions
+    const campaignSuccessTotals = await prisma.donationTransaction.groupBy({
+      by: ['campaignId', 'currency'],
+      where: { status: 'SUCCESS' },
+      _sum: {
+        amount: true
+      },
+      _count: {
+        _all: true
+      }
+    });
+
+    // Fetch titles and targets of campaigns involved
+    const campaignIds = [...new Set(campaignSuccessTotals.map((c) => c.campaignId))];
+    const campaigns = await prisma.donationCampaign.findMany({
+      where: { id: { in: campaignIds } },
+      select: {
+        id: true,
+        title: true,
+        targetAmount: true,
+        currency: true
+      }
+    });
+
+    const campaignMap = new Map();
+    campaigns.forEach((c) => {
+      campaignMap.set(c.id, c);
+    });
+
+    const campaignTotals = campaignSuccessTotals.map((item) => {
+      const campaign = campaignMap.get(item.campaignId);
+      return {
+        campaignId: item.campaignId,
+        title: campaign ? campaign.title : 'Unknown Campaign',
+        currency: item.currency,
+        targetAmount: campaign ? campaign.targetAmount.toString() : null,
+        totalRaised: item._sum.amount ? item._sum.amount.toString() : '0.00',
+        successfulDonationCount: item._count._all
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalSuccessfulDonations,
+        totalPendingTransactions,
+        totalFailedTransactions,
+        totalRaisedByCurrency,
+        campaignTotals
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getCampaigns,
   getCampaignById,
   initiateDonation,
   verifyDonation,
-  handleWebhook
+  handleWebhook,
+  getMyDonationHistory,
+  getTransactionById,
+  downloadReceipt,
+  getAdminDonations,
+  getAdminDonationSummary
 };
 

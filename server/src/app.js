@@ -7,6 +7,7 @@ const applicationRoutes = require('./routes/application.routes');
 const eventRoutes = require('./routes/event.routes');
 const mentorshipRoutes = require('./routes/mentorship.routes');
 const donationRoutes = require('./routes/donation.routes');
+const adminDonationRoutes = require('./routes/adminDonation.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -65,6 +66,9 @@ function createApp() {
 
   // Donation routes
   app.use('/api/donations', donationRoutes);
+
+  // Admin donation routes
+  app.use('/api/admin/donations', adminDonationRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
