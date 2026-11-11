@@ -26,12 +26,16 @@ import DonationHistory from './pages/donations/DonationHistory'
 import Stories from './pages/stories/Stories'
 import StoryDetails from './pages/stories/StoryDetails'
 import SubmitStory from './pages/stories/SubmitStory'
+import Feedback from './pages/feedback/Feedback'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
 import AdminJobs from './pages/admin/AdminJobs'
 import AdminEvents from './pages/admin/AdminEvents'
 import AdminMentorship from './pages/admin/AdminMentorship'
+import AdminDonations from './pages/admin/AdminDonations'
+import AdminSurveys from './pages/admin/AdminSurveys'
+import AdminStories from './pages/admin/AdminStories'
 import AdminPlaceholder from './pages/admin/AdminPlaceholder'
 
 export default function App() {
@@ -46,6 +50,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/directory" element={<Directory />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/donations" element={<Campaigns />} />
         <Route path="/donations/:campaignId" element={<CampaignDetails />} />
         <Route path="/stories" element={<Stories />} />
@@ -76,10 +81,10 @@ export default function App() {
           <Route path="alumni" element={<AdminPlaceholder title="Alumni Management" description="Manage verified alumni member records, search profiles, and edit cohorts." moduleKey="admin-alumni" />} />
           <Route path="events" element={<AdminEvents />} />
           <Route path="jobs" element={<AdminJobs />} />
-          <Route path="donations" element={<AdminPlaceholder title="Donations & Campaigns" description="Track alumni contributions, endowments, scholarship funds, and campaign progress." moduleKey="admin-donations" />} />
+          <Route path="donations" element={<AdminDonations />} />
           <Route path="mentorship" element={<AdminMentorship />} />
-          <Route path="success-stories" element={<AdminPlaceholder title="Success Stories" description="Curate and publish alumni spotlights, career achievements, and institutional news." moduleKey="admin-success-stories" />} />
-          <Route path="surveys" element={<AdminPlaceholder title="Feedback & Surveys" description="Design alumni feedback questionnaires, run sentiment surveys, and analyze responses." moduleKey="admin-surveys" />} />
+          <Route path="success-stories" element={<AdminStories />} />
+          <Route path="surveys" element={<AdminSurveys />} />
           <Route path="users" element={<AdminPlaceholder title="User Management" description="Administer user accounts, manage role allocations, and enforce security policies." moduleKey="admin-users" />} />
         </Route>
       </Route>
