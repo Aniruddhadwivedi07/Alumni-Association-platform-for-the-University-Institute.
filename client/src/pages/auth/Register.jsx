@@ -14,7 +14,7 @@ const fields = [
 ]
 
 export default function Register() {
-  const [values, setValues] = useState({ ...EMPTY_PROFILE, password: '' })
+  const [values, setValues] = useState({ ...EMPTY_PROFILE, password: '', confirmPassword: '' })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState({ loading: false, message: '' })
   const navigate = useNavigate()
@@ -26,13 +26,22 @@ export default function Register() {
   async function submit(event) {
     event.preventDefault()
     const nextErrors = validateProfile(values, true)
+    if (values.password !== values.confirmPassword) {
+      nextErrors.confirmPassword = 'Passwords do not match.'
+    }
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
     setStatus({ loading: true, message: '' })
     try {
       await apiRequest('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ fullName: values.fullName, email: values.email, password: values.password, graduationYear: values.graduationYear ? Number(values.graduationYear) : null, department: values.department || null }),
+        body: JSON.stringify({
+          fullName: values.fullName.trim(),
+          email: values.email.trim(),
+          password: values.password,
+          graduationYear: values.graduationYear ? Number(values.graduationYear) : null,
+          department: values.department ? values.department.trim() : null
+        }),
       })
       navigate('/login', { state: { message: 'Registration complete. You can sign in now.' } })
     } catch (error) {
@@ -51,6 +60,7 @@ export default function Register() {
             <FormField key={name} name={name} label={label} type={type} value={values[name]} onChange={update} error={errors[name]} required={name === 'fullName' || name === 'email'} min={type === 'number' ? 1950 : undefined} max={type === 'number' ? maxGraduationYear : undefined} />
           ))}
           <FormField name="password" label="Password" type="password" autoComplete="new-password" value={values.password} onChange={update} error={errors.password} required />
+          <FormField name="confirmPassword" label="Confirm Password" type="password" autoComplete="new-password" value={values.confirmPassword} onChange={update} error={errors.confirmPassword} required />
           {status.message && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{status.message}</p>}
           <button disabled={status.loading} className="w-full rounded-lg bg-indigo-700 px-5 py-3 font-semibold text-white hover:bg-indigo-800 disabled:opacity-60">
             {status.loading ? 'Submitting…' : 'Create account'}
