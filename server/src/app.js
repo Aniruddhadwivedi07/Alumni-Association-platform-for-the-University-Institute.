@@ -6,6 +6,7 @@ const jobRoutes = require('./routes/job.routes');
 const applicationRoutes = require('./routes/application.routes');
 const eventRoutes = require('./routes/event.routes');
 const mentorshipRoutes = require('./routes/mentorship.routes');
+const donationRoutes = require('./routes/donation.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -17,7 +18,13 @@ function createApp() {
     app.set('trust proxy', 1);
   }
 
-  app.use(express.json());
+  app.use(
+    express.json({
+      verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+      }
+    })
+  );
 
   // Register session middleware before routes that access it
   app.use(sessionMiddleware());
@@ -55,6 +62,9 @@ function createApp() {
 
   // Mentorship routes
   app.use('/api/mentorship', mentorshipRoutes);
+
+  // Donation routes
+  app.use('/api/donations', donationRoutes);
 
   // Centralized error handling
   app.use(errorHandler);
