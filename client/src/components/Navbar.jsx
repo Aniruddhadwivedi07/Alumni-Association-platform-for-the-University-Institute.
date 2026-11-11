@@ -26,6 +26,9 @@ export default function Navbar() {
           <NavLink to="/alumni-association" onClick={close} className={linkClass}>Association</NavLink>
           <NavLink to="/contact" onClick={close} className={linkClass}>Contact</NavLink>
           <NavLink to="/directory" onClick={close} className={linkClass}>Directory</NavLink>
+          <NavLink to="/donations" onClick={close} className={linkClass}>Donate</NavLink>
+          <NavLink to="/stories" onClick={close} className={linkClass}>Stories</NavLink>
+          {session && <NavLink to="/donations/history" onClick={close} className={linkClass}>My donations</NavLink>}
           {session && <NavLink to="/jobs" onClick={close} className={linkClass}>Jobs</NavLink>}
           {session && <NavLink to="/events" onClick={close} className={linkClass}>Events</NavLink>}
           {session && <NavLink to="/my-events" onClick={close} className={linkClass}>My events</NavLink>}

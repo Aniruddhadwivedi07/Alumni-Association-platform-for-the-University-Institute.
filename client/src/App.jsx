@@ -20,6 +20,12 @@ import Events from './pages/events/Events'
 import EventDetails from './pages/events/EventDetails'
 import MyEventRegistrations from './pages/events/MyEventRegistrations'
 import Mentorship from './pages/mentorship/Mentorship'
+import Campaigns from './pages/donations/Campaigns'
+import CampaignDetails from './pages/donations/CampaignDetails'
+import DonationHistory from './pages/donations/DonationHistory'
+import Stories from './pages/stories/Stories'
+import StoryDetails from './pages/stories/StoryDetails'
+import SubmitStory from './pages/stories/SubmitStory'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
@@ -40,6 +46,10 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/directory" element={<Directory />} />
+        <Route path="/donations" element={<Campaigns />} />
+        <Route path="/donations/:campaignId" element={<CampaignDetails />} />
+        <Route path="/stories" element={<Stories />} />
+        <Route path="/stories/:storyId" element={<StoryDetails />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/jobs" element={<Jobs />} />
@@ -53,6 +63,8 @@ export default function App() {
           <Route path="/events/:eventId" element={<EventDetails />} />
           <Route path="/my-events" element={<MyEventRegistrations />} />
           <Route path="/mentorship" element={<Mentorship />} />
+          <Route path="/donations/history" element={<DonationHistory />} />
+          <Route path="/stories/new" element={<SubmitStory />} />
         </Route>
       </Route>
 
