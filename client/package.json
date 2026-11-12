@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "test": "node --test src/test/client-workflows.test.js src/test/job-client-workflows.test.js src/test/event-mentorship-client.test.js src/test/donations-content-client.test.js",
+    "test": "node --test src/test/client-workflows.test.js src/test/job-client-workflows.test.js src/test/event-mentorship-client.test.js src/test/donations-content-client.test.js src/test/e2e-client-workflows.test.js",
     "preview": "vite preview"
   },
   "dependencies": {
