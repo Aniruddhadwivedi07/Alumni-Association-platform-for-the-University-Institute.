@@ -17,6 +17,15 @@ export default function Footer() {
           <Link to="/contact" className="font-semibold text-indigo-700 hover:underline">
             Contact
           </Link>
+          <Link to="/donations" className="font-semibold text-indigo-700 hover:underline">
+            Donate
+          </Link>
+          <Link to="/stories" className="font-semibold text-indigo-700 hover:underline">
+            Success Stories
+          </Link>
+          <Link to="/feedback" className="font-semibold text-indigo-700 hover:underline">
+            Feedback
+          </Link>
         </div>
       </div>
     </footer>

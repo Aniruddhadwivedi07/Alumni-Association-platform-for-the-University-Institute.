@@ -87,31 +87,29 @@ export default function AdminStories() {
 
   useEffect(() => {
     let ignore = false
-    apiRequest('/success-stories')
+    apiRequest('/admin/success-stories?limit=50')
       .then((res) => {
         if (!ignore && res.data && res.data.length > 0) {
-          // Merge API published stories with local queue
           const apiStories = res.data.map((s) => ({
             id: s.id,
             title: s.title,
             content: s.content,
-            author: s.authorName || 'Alumni member',
+            author: s.author?.fullName || s.author?.email || 'Alumni member',
+            graduationYear: s.author?.graduationYear,
+            department: s.author?.department,
             category: 'Engineering & Technology',
             imageUrl: s.imageUrl,
-            status: 'APPROVED',
-            isPublished: true,
-            submittedAt: s.publishedAt || new Date().toISOString(),
+            status: s.isPublished ? 'APPROVED' : 'PENDING',
+            isPublished: s.isPublished,
+            submittedAt: s.createdAt,
             publishedAt: s.publishedAt,
           }))
 
-          setStories((prev) => {
-            const pendingOnly = prev.filter((p) => p.status !== 'APPROVED')
-            return [...pendingOnly, ...apiStories]
-          })
+          setStories(apiStories)
         }
       })
       .catch(() => {
-        // Fallback gracefully
+        // Fallback gracefully to curated local queue if offline
       })
       .finally(() => {
         if (!ignore) setLoading(false)
@@ -143,9 +141,23 @@ export default function AdminStories() {
   }, [stories, statusFilter, categoryFilter, search])
 
   // Handle Moderation Confirmation Action
-  function handleConfirmModeration() {
+  async function handleConfirmModeration() {
     if (!actionDialog) return
     const { type, story } = actionDialog
+
+    try {
+      if (type === 'APPROVE') {
+        await apiRequest(`/admin/success-stories/${story.id}/publish`, {
+          method: 'PATCH',
+        })
+      } else if (type === 'REJECT') {
+        await apiRequest(`/admin/success-stories/${story.id}/unpublish`, {
+          method: 'PATCH',
+        })
+      }
+    } catch {
+      // Graceful fallback for offline demo environment
+    }
 
     setStories((prev) =>
       prev.map((item) => {
