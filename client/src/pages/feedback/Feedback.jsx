@@ -63,9 +63,8 @@ export default function Feedback() {
         }),
       })
       setSubmitted(true)
-    } catch {
-      // Graceful fallback when feedback backend route is in development / pending implementation
-      setSubmitted(true)
+    } catch (error) {
+      setServerError(error.message)
     } finally {
       setSubmitting(false)
     }
