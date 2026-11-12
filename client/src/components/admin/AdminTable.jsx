@@ -1,7 +1,7 @@
 export function AdminTable({ columns, data = [], emptyMessage = 'No records found.' }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-      <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+    <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <table className="min-w-[640px] divide-y divide-slate-200 text-left text-sm">
         <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600">
           <tr>
             {columns.map((col, idx) => (

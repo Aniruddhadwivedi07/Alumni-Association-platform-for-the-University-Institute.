@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <section className="bg-indigo-950 text-white">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 md:items-center md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 sm:py-16 md:grid-cols-2 md:items-center md:gap-12 md:py-24">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">Government Engineering College</p>
             <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">Your campus years end.<br />Your connections grow.</h1>
