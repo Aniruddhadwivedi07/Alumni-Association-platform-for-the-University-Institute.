@@ -17,10 +17,10 @@ export default function Navbar() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <nav aria-label="Main navigation" className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
-        <Link to="/" onClick={close} className="font-bold tracking-tight text-indigo-900">GEC <span className="font-normal text-slate-600">Alumni Association</span></Link>
+      <nav aria-label="Main navigation" className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
+        <Link to="/" onClick={close} className="min-w-0 font-bold tracking-tight text-indigo-900">GEC <span className="font-normal text-slate-600">Alumni Association</span></Link>
         <button type="button" aria-expanded={open} aria-controls="navigation-links" onClick={() => setOpen(!open)} className="rounded border border-slate-300 px-3 py-2 text-sm md:hidden">{open ? 'Close menu' : 'Menu'}</button>
-        <div id="navigation-links" className={`${open ? 'flex' : 'hidden'} w-full flex-col gap-2 md:flex md:w-auto md:flex-row md:items-center`}>
+        <div id="navigation-links" className={`${open ? 'flex' : 'hidden'} w-full min-w-0 flex-col gap-1 md:flex md:w-auto md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-1`}>
           <NavLink to="/" end onClick={close} className={linkClass}>Home</NavLink>
           <NavLink to="/about" onClick={close} className={linkClass}>About</NavLink>
           <NavLink to="/alumni-association" onClick={close} className={linkClass}>Association</NavLink>
