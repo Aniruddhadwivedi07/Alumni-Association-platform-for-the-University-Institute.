@@ -79,6 +79,10 @@ function createApp() {
   app.use('/api/admin/success-stories', adminSuccessStoryRoutes);
 
   // Centralized error handling
+  app.use('/api/feedback', require('./routes/feedback.routes'));
+  app.use('/api', (req, res) => res.status(404).json({
+    success: false, error: { code: 'NOT_FOUND', message: 'This API endpoint is not available' }
+  }));
   app.use(errorHandler);
 
   return app;
