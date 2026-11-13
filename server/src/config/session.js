@@ -7,7 +7,10 @@ let sessionPool = null;
 function getSessionPool() {
   if (!sessionPool) {
     sessionPool = new Pool({
-      connectionString: process.env.DATABASE_URL
+      connectionString: process.env.DATABASE_URL,
+      // Supabase's pooled PostgreSQL connection presents a certificate chain
+      // that the Vercel runtime does not include by default.
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
     });
   }
   return sessionPool;
