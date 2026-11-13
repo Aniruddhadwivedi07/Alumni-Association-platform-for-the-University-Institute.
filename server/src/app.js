@@ -84,6 +84,9 @@ function createApp() {
   return app;
 }
 
-module.exports = {
-  createApp
-};
+// Export the ready-to-handle Express application for Vercel's Express runtime.
+// Keep createApp available for the local server and automated tests.
+const app = createApp();
+
+module.exports = app;
+module.exports.createApp = createApp;
