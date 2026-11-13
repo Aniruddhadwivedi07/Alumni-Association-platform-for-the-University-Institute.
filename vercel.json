@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm --prefix server exec prisma generate && npm --prefix client run build",
+  "outputDirectory": "client/dist",
+  "installCommand": "npm --prefix client ci && npm --prefix server ci",
+  "functions": {
+    "api/[...path].js": {
+      "includeFiles": "server/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/((?!api(?:/|$)).*)", "destination": "/index.html" }
+  ]
+}
