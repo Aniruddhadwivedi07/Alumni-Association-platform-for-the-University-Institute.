@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAlumniDirectory } = require('../controllers/directory.controller');
+const { getAlumniDirectory, getAlumniById } = require('../controllers/directory.controller');
 const { requireAuth } = require('../middlewares/auth');
 const { validateQuery } = require('../middlewares/validate');
 const { directoryQuerySchema } = require('../validators/directory.validator');
@@ -10,6 +10,7 @@ const router = express.Router();
 router.use(requireAuth);
 
 router.get('/alumni', validateQuery(directoryQuerySchema), getAlumniDirectory);
+router.get('/alumni/:id', getAlumniById);
 
 module.exports = router;
 
