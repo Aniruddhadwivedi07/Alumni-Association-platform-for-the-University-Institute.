@@ -79,11 +79,18 @@ function createApp() {
   app.use('/api/admin/success-stories', adminSuccessStoryRoutes);
 
   // Centralized error handling
+  app.use('/api/feedback', require('./routes/feedback.routes'));
+  app.use('/api', (req, res) => res.status(404).json({
+    success: false, error: { code: 'NOT_FOUND', message: 'This API endpoint is not available' }
+  }));
   app.use(errorHandler);
 
   return app;
 }
 
-module.exports = {
-  createApp
-};
+// Export the ready-to-handle Express application for Vercel's Express runtime.
+// Keep createApp available for the local server and automated tests.
+const app = createApp();
+
+module.exports = app;
+module.exports.createApp = createApp;

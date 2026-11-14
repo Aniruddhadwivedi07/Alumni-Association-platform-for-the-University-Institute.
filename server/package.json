@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "node --test test/workflow.test.js test/job-workflows.test.js test/event-mentorship-workflows.test.js test/donations-content-workflows.test.js test/e2e-workflows.test.js",
     "prisma:generate": "prisma generate",
+    "prisma:deploy": "prisma migrate deploy",
     "db:verify": "node src/verify-db.js",
     "db:seed": "prisma db seed"
   },
