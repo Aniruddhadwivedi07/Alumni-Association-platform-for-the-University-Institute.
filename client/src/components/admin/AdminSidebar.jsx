@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import nstLogo from '../../assets/nst-logo.png'
+import BrandLogo from '../BrandLogo'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/admin', icon: '📊', end: true },
@@ -26,8 +26,8 @@ export default function AdminSidebar({ mobileOpen, onCloseMobile }) {
     <div className="flex h-full flex-col bg-slate-900 text-slate-100">
       <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5">
         <NavLink to="/admin" className="flex items-center gap-2.5" onClick={onCloseMobile}>
-          <div className="rounded bg-white p-1">
-            <img src={nstLogo} alt="NST" className="h-6 w-auto object-contain" />
+          <div className="rounded-lg bg-white p-1">
+            <BrandLogo variant="icon-only" />
           </div>
           <span className="text-sm font-bold tracking-tight text-white">Admin Console</span>
         </NavLink>
@@ -65,20 +65,18 @@ export default function AdminSidebar({ mobileOpen, onCloseMobile }) {
       </nav>
 
       <div className="border-t border-slate-800 p-4 text-xs text-slate-400">
-        <p className="font-semibold text-slate-200">NST Alumni Admin Console</p>
-        <p className="mt-0.5 text-slate-500">Newton School of Technology</p>
+        <p className="font-semibold text-slate-200">Alumni Association Console</p>
+        <p className="mt-0.5 text-slate-500">Platform Administrator</p>
       </div>
     </div>
   )
 
   return (
     <>
-      {/* Desktop static sidebar */}
       <aside className="hidden w-64 shrink-0 border-r border-slate-800 lg:block">
         {content}
       </aside>
 
-      {/* Mobile drawer backdrop and sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div

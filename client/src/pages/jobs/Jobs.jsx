@@ -33,13 +33,13 @@ export default function Jobs() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <span className="inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-        NST Career Network
+        Career Network
       </span>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[#172B45] sm:text-4xl">
         Career Opportunities
       </h1>
       <p className="mt-2 text-base text-slate-600">
-        Discover engineering roles, tech internships, and career opportunities shared directly by Newton School of Technology alumni.
+        Discover engineering roles, tech internships, and career opportunities shared directly by alumni.
       </p>
 
       {/* Filter and Search Bar */}
@@ -87,7 +87,7 @@ export default function Jobs() {
 
       {loading && (
         <p className="mt-10 text-center text-sm text-slate-500" role="status">
-          Loading NST job postings…
+          Loading job postings…
         </p>
       )}
       {error && (

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField'
 import { useAuth } from '../../context/AuthContext'
-import nstLogo from '../../assets/nst-logo.png'
+import BrandLogo from '../../components/BrandLogo'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -36,20 +36,16 @@ export default function Login() {
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xs sm:p-10">
         <div className="flex flex-col items-center text-center">
           <Link to="/" className="inline-block transition-opacity hover:opacity-90">
-            <img
-              src={nstLogo}
-              alt="Newton School of Technology"
-              className="h-10 w-auto object-contain"
-            />
+            <BrandLogo />
           </Link>
-          <span className="mt-3 inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-            NST Alumni Association
+          <span className="mt-4 inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
+            Member Sign In
           </span>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
-            Welcome back
+          <h1 className="mt-3 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
+            Welcome Back
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Sign in to access your alumni profile & services
+            Sign in to access directory, mentorship, jobs and community initiatives
           </p>
         </div>
 
@@ -97,7 +93,7 @@ export default function Login() {
             disabled={loading}
             className="w-full rounded-xl bg-[#0878D1] px-5 py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-[#0665B2] disabled:opacity-60"
           >
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
 

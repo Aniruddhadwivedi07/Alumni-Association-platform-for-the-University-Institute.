@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import nstLogo from '../assets/nst-logo.png'
+import BrandLogo from './BrandLogo'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { session, logout } = useAuth()
   const navigate = useNavigate()
-  
+
   const linkClass = ({ isActive }) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
       isActive
@@ -22,10 +22,14 @@ export default function Navbar() {
     navigate('/')
   }
 
-  // Generate avatar initials like the student portal (e.g. "AJ")
   const initials = (
     session?.profile?.fullName
-      ? session.profile.fullName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+      ? session.profile.fullName
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase()
       : session?.email?.slice(0, 2).toUpperCase() || 'U'
   )
 
@@ -40,17 +44,9 @@ export default function Navbar() {
           to="/"
           onClick={close}
           className="flex items-center gap-3 transition-opacity hover:opacity-90"
-          aria-label="NST Alumni Association Home"
+          aria-label="Alumni Association Home"
         >
-          <img
-            src={nstLogo}
-            alt="Newton School of Technology"
-            className="h-8 w-auto object-contain sm:h-9"
-          />
-          <span className="hidden h-5 w-px bg-slate-300 sm:block" />
-          <span className="text-sm font-semibold tracking-tight text-[#064477] sm:text-base">
-            Alumni Association
-          </span>
+          <BrandLogo />
         </Link>
 
         {/* Mobile menu button */}
@@ -89,9 +85,6 @@ export default function Navbar() {
           <NavLink to="/alumni-association" onClick={close} className={linkClass}>
             Association
           </NavLink>
-          <NavLink to="/contact" onClick={close} className={linkClass}>
-            Contact
-          </NavLink>
           <NavLink to="/directory" onClick={close} className={linkClass}>
             Directory
           </NavLink>
@@ -99,16 +92,19 @@ export default function Navbar() {
             Donate
           </NavLink>
           <NavLink to="/stories" onClick={close} className={linkClass}>
-            Stories
+            Success Stories
           </NavLink>
           <NavLink to="/feedback" onClick={close} className={linkClass}>
             Feedback
+          </NavLink>
+          <NavLink to="/contact" onClick={close} className={linkClass}>
+            Contact
           </NavLink>
 
           {session && (
             <>
               <NavLink to="/donations/history" onClick={close} className={linkClass}>
-                My donations
+                My Donations
               </NavLink>
               <NavLink to="/jobs" onClick={close} className={linkClass}>
                 Jobs
@@ -117,7 +113,7 @@ export default function Navbar() {
                 Events
               </NavLink>
               <NavLink to="/my-events" onClick={close} className={linkClass}>
-                My events
+                My Events
               </NavLink>
               <NavLink to="/mentorship" onClick={close} className={linkClass}>
                 Mentorship
@@ -129,7 +125,7 @@ export default function Navbar() {
               )}
               {(session?.role === 'ALUMNI' || session?.role === 'ADMIN') && (
                 <NavLink to="/my-jobs" onClick={close} className={linkClass}>
-                  My jobs
+                  My Jobs
                 </NavLink>
               )}
             </>

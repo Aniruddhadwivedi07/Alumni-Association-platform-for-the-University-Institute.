@@ -24,13 +24,13 @@ export default function Events() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <span className="inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-        NST Gatherings & Reunions
+        Alumni Gatherings & Reunions
       </span>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[#172B45] sm:text-4xl">
         Upcoming Events
       </h1>
       <p className="mt-2 text-base text-slate-600">
-        Connect with Newton School of Technology alumni and faculty at tech workshops, cohort reunions, and regional meetups.
+        Connect with alumni and faculty at tech workshops, cohort reunions, and regional meetups.
       </p>
 
       {/* Search Bar */}
@@ -68,7 +68,7 @@ export default function Events() {
                 </span>
                 <h2 className="mt-3 text-lg font-bold text-[#172B45]">{event.title}</h2>
                 <p className="mt-1 text-xs font-medium text-slate-500">
-                  📍 {event.location || 'NST Campus / Virtual'}
+                  📍 {event.location || 'Campus / Virtual'}
                 </p>
                 <p className="mt-3 line-clamp-3 text-sm text-slate-600 leading-relaxed">
                   {event.description}

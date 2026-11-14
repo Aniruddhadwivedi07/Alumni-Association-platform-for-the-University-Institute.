@@ -71,13 +71,13 @@ export default function Contact() {
       <section className="bg-gradient-to-r from-[#064477] to-[#002D54] text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
           <p className="text-xs font-semibold uppercase tracking-widest text-sky-200">
-            Newton School of Technology
+            Alumni Association
           </p>
           <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
-            Contact the NST Alumni Cell
+            Contact the Alumni Office
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-sky-100">
-            Have questions about alumni membership, cohort reunions, mentorship, or campus initiatives? Reach out to our team.
+            Have questions about membership, reunions, mentorship, or community initiatives? Reach out to our team.
           </p>
         </div>
       </section>
@@ -89,35 +89,34 @@ export default function Contact() {
           <div>
             <h2 className="text-2xl font-bold text-[#172B45]">Get in Touch</h2>
             <p className="mt-4 leading-relaxed text-slate-600">
-              The NST Alumni Relations Cell is located on the college campus. We are available during academic working hours to assist alumni, students, and technology partners.
+              The Alumni Association Liaison Cell is available during working hours to assist alumni, current students, and institutional partners.
             </p>
 
             <div className="mt-8 space-y-6">
               <div className="rounded-2xl border border-slate-200 bg-[#F7F9FC] p-6 shadow-xs">
-                <h3 className="font-bold text-[#172B45]">Campus Office</h3>
+                <h3 className="font-bold text-[#172B45]">Campus & Administrative Office</h3>
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                  Newton School of Technology Campus<br />
                   Alumni Relations & External Partnerships Wing<br />
-                  Tech Tower, Innovation Floor<br />
-                  <span className="font-medium text-[#0878D1]">alumni@newtonschool.co</span>
+                  Administrative Complex, Ground Floor<br />
+                  <span className="font-medium text-[#0878D1]">alumni-support@association.org</span>
                 </p>
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-[#F7F9FC] p-6 shadow-xs">
                 <h3 className="font-bold text-[#172B45]">Inquiry Types Handled</h3>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  <li>• Alumni registration verification and cohort records</li>
+                  <li>• Alumni registration verification and batch records</li>
                   <li>• Mentorship program participation</li>
-                  <li>• Campus visits, technical masterclasses, and batch meetups</li>
-                  <li>• Institutional hackathons and scholarship initiatives</li>
+                  <li>• Campus visits, technical masterclasses, and batch reunions</li>
+                  <li>• Community campaigns and student grant initiatives</li>
                 </ul>
               </div>
 
               <div className="rounded-2xl border border-sky-100 bg-[#EAF2FF]/60 p-6">
                 <h3 className="font-bold text-[#064477]">Operating Hours</h3>
                 <p className="mt-2 text-sm text-slate-700">
-                  Monday to Friday: 9:00 AM – 6:00 PM IST<br />
-                  Saturday: 10:00 AM – 2:00 PM IST (by appointment)
+                  Monday to Friday: 9:00 AM – 6:00 PM<br />
+                  Saturday: 10:00 AM – 2:00 PM (by appointment)
                 </p>
               </div>
             </div>
@@ -127,14 +126,14 @@ export default function Contact() {
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xs">
             <h2 className="text-2xl font-bold text-[#172B45]">Send Us an Inquiry</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Fill out the form below and an NST alumni relations officer will get back to you.
+              Fill out the form below and an alumni relations coordinator will get back to you.
             </p>
 
             {submitted ? (
               <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-900">
                 <h3 className="font-bold">Thank you for reaching out!</h3>
                 <p className="mt-2 text-sm text-emerald-800">
-                  Your message has been received by the NST Alumni Relations Cell. We will review your inquiry and respond within two working days.
+                  Your message has been received by the Alumni Relations Cell. We will review your inquiry and respond promptly.
                 </p>
                 <button
                   type="button"
@@ -205,7 +204,7 @@ export default function Contact() {
                     className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0878D1] ${
                       errors.subject ? 'border-rose-500 focus:border-rose-500' : 'border-slate-300'
                     }`}
-                    placeholder="e.g. Mentorship Inquiry / Cohort Reunion"
+                    placeholder="e.g. Mentorship Inquiry / Batch Reunion"
                   />
                   {errors.subject && (
                     <p id="subject-error" className="mt-1 text-xs text-rose-600">{errors.subject}</p>

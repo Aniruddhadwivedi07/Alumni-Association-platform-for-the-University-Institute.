@@ -76,13 +76,13 @@ export default function AdminDashboard() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-[#0878D1]">
-            NST Administration
+            Platform Administration
           </p>
           <h1 className="text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
             Dashboard Overview
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Real-time status of Newton School of Technology alumni community records and administrative actions.
+            Real-time status of alumni community records and administrative actions.
           </p>
         </div>
         <div className="flex items-center gap-3">

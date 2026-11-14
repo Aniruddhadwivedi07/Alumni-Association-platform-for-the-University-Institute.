@@ -17,10 +17,10 @@ export default function AdminHeader({ onOpenMobile }) {
         </button>
         <div>
           <span className="rounded bg-[#EAF2FF] px-2 py-0.5 text-xs font-semibold text-[#0878D1]">
-            NST Portal
+            Control Center
           </span>
           <h2 className="text-sm font-semibold text-slate-900 sm:text-base">
-            Alumni Administration Workspace
+            Alumni Association Administration Workspace
           </h2>
         </div>
       </div>
@@ -38,7 +38,7 @@ export default function AdminHeader({ onOpenMobile }) {
             <p className="text-xs font-semibold text-slate-800">
               {session?.profile?.fullName || session?.email || 'Administrator'}
             </p>
-            <p className="text-xs text-slate-500">Newton School of Technology • {session?.role || 'ADMIN'}</p>
+            <p className="text-xs text-slate-500">Alumni Cell • {session?.role || 'ADMIN'}</p>
           </div>
           <button
             type="button"

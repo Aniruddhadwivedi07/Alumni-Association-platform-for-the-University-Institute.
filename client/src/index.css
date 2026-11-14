@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Official NST Color Palette mapped to theme */
+  /* Professional Blue Theme Color Palette mapped to theme */
   --color-indigo-50: #EAF2FF;
   --color-indigo-100: #D0E4FF;
   --color-indigo-200: #A8CEFF;
@@ -14,18 +14,18 @@
   --color-indigo-900: #064477;
   --color-indigo-950: #002D54;
 
-  /* Explicit NST Design Tokens */
-  --color-nst-primary: #0878D1;
-  --color-nst-primary-hover: #0665B2;
-  --color-nst-navy: #004B87;
-  --color-nst-dark: #064477;
-  --color-nst-deep: #172B45;
-  --color-nst-light: #EAF2FF;
-  --color-nst-ice: #F0F6FF;
-  --color-nst-surface: #F7F9FC;
-  --color-nst-border: #E2E8F0;
-  --color-nst-text: #172B45;
-  --color-nst-muted: #64748B;
+  /* Explicit Theme Design Tokens */
+  --color-brand-primary: #0878D1;
+  --color-brand-primary-hover: #0665B2;
+  --color-brand-navy: #004B87;
+  --color-brand-dark: #064477;
+  --color-brand-deep: #172B45;
+  --color-brand-light: #EAF2FF;
+  --color-brand-ice: #F0F6FF;
+  --color-brand-surface: #F7F9FC;
+  --color-brand-border: #E2E8F0;
+  --color-brand-text: #172B45;
+  --color-brand-muted: #64748B;
 }
 
 *,

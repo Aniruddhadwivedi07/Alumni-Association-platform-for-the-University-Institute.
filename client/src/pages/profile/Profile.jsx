@@ -55,7 +55,7 @@ export default function Profile() {
       })
       setProfile({ ...profile, ...data.data?.profile })
       setEditing(false)
-      setMessage('Your NST alumni profile has been saved.')
+      setMessage('Your alumni profile has been saved.')
     } catch (error) {
       setMessage(error.message)
     } finally {
@@ -66,7 +66,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center text-sm text-slate-500">
-        Loading your NST profile…
+        Loading your profile…
       </div>
     )
   }
@@ -77,13 +77,13 @@ export default function Profile() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <span className="inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-              NST Member Profile
+              Member Profile
             </span>
             <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-[#172B45] sm:text-3xl">
               Your Profile
             </h1>
             <p className="mt-1 text-xs text-slate-500">
-              Role: <span className="font-semibold text-slate-700">{session?.role || 'MEMBER'}</span> • Newton School of Technology
+              Role: <span className="font-semibold text-slate-700">{session?.role || 'MEMBER'}</span> • Alumni Community
             </p>
           </div>
           {!editing && (
@@ -126,7 +126,7 @@ export default function Profile() {
                 rows="4"
                 value={profile.bio || ''}
                 onChange={update}
-                placeholder="Share your engineering focus, interests, and how you want to collaborate with NST peers…"
+                placeholder="Share your engineering focus, interests, and how you want to collaborate with alumni peers…"
                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF]"
               />
             </div>

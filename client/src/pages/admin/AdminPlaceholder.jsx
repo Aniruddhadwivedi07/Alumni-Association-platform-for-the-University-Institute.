@@ -6,7 +6,7 @@ export default function AdminPlaceholder({ title, description, moduleKey }) {
     <div className="space-y-6">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-[#0878D1]">
-          NST Admin Workspace
+          Admin Workspace
         </p>
         <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
           {title}

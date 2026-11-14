@@ -76,13 +76,13 @@ export default function Mentorship() {
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <span className="inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-        NST Mentorship Network
+        Mentorship Network
       </span>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[#172B45] sm:text-4xl">
         Mentorship Program
       </h1>
       <p className="mt-2 text-base text-slate-600">
-        Connect one-on-one with Newton School of Technology graduates for career navigation, system design coaching, and industry advice.
+        Connect one-on-one with experienced alumni for career navigation, system design coaching, and industry advice.
       </p>
 
       {isStudent && (

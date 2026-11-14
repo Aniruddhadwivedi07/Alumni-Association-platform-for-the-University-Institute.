@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField'
 import { apiRequest } from '../../lib/api'
 import { EMPTY_PROFILE, validateProfile } from '../../lib/profile'
-import nstLogo from '../../assets/nst-logo.png'
+import BrandLogo from '../../components/BrandLogo'
 
 const maxGraduationYear = new Date().getFullYear() + 8
 
@@ -11,7 +11,7 @@ const fields = [
   ['fullName', 'Full name', 'text'],
   ['email', 'Email address', 'email'],
   ['graduationYear', 'Graduation year', 'number'],
-  ['department', 'Department / Specialization', 'text'],
+  ['department', 'Department / Program of Study', 'text'],
 ]
 
 export default function Register() {
@@ -55,20 +55,16 @@ export default function Register() {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-10">
         <div className="flex flex-col items-center text-center">
           <Link to="/" className="inline-block transition-opacity hover:opacity-90">
-            <img
-              src={nstLogo}
-              alt="Newton School of Technology"
-              className="h-10 w-auto object-contain"
-            />
+            <BrandLogo />
           </Link>
-          <span className="mt-3 inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
-            NST Alumni Association
+          <span className="mt-4 inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
+            Community Membership
           </span>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
             Alumni Registration
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Create your account to connect with peers, discover jobs, and mentor students
+            Join the verified network to connect with peers, mentor students, and share career opportunities
           </p>
         </div>
 
