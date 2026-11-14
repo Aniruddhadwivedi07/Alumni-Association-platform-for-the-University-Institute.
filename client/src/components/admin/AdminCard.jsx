@@ -29,7 +29,7 @@ export function StatCard({ label, value, note, icon, change, changeType = 'neutr
           {label}
         </span>
         {icon && (
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 text-base">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#EAF2FF] text-[#0878D1] text-base">
             {icon}
           </span>
         )}

@@ -5,10 +5,10 @@ export default function AdminPlaceholder({ title, description, moduleKey }) {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">
-          Module Workspace
+        <p className="text-xs font-semibold uppercase tracking-wider text-[#0878D1]">
+          NST Admin Workspace
         </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
           {title}
         </h1>
         <p className="mt-1 text-sm text-slate-600">{description}</p>
@@ -28,7 +28,7 @@ export default function AdminPlaceholder({ title, description, moduleKey }) {
           <div className="mt-6 flex justify-center gap-3">
             <Link
               to="/admin"
-              className="rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800"
+              className="rounded-xl bg-[#0878D1] px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-[#0665B2]"
             >
               Back to Overview
             </Link>

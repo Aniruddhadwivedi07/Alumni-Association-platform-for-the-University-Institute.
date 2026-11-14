@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       render: () => (
         <Link
           to="/admin/verification"
-          className="text-xs font-semibold text-indigo-700 hover:text-indigo-900 hover:underline"
+          className="text-xs font-semibold text-[#0878D1] hover:text-[#0665B2] hover:underline"
         >
           View in Verification
         </Link>
@@ -75,20 +75,20 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">
-            Administration
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#0878D1]">
+            NST Administration
           </p>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
             Dashboard Overview
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Real-time status of alumni community records and administrative actions.
+            Real-time status of Newton School of Technology alumni community records and administrative actions.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/admin/verification"
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#0878D1] px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-[#0665B2]"
           >
             <span>Review Registrations</span>
             <span>→</span>
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
           </p>
           <Link
             to="/admin/verification"
-            className="text-sm font-semibold text-indigo-700 hover:text-indigo-900"
+            className="text-sm font-semibold text-[#0878D1] hover:text-[#0665B2]"
           >
             Launch verification workflow →
           </Link>
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
           </p>
           <Link
             to="/directory"
-            className="text-sm font-semibold text-indigo-700 hover:text-indigo-900"
+            className="text-sm font-semibold text-[#0878D1] hover:text-[#0665B2]"
           >
             Browse live directory →
           </Link>
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
           </p>
           <Link
             to="/admin/users"
-            className="text-sm font-semibold text-indigo-700 hover:text-indigo-900"
+            className="text-sm font-semibold text-[#0878D1] hover:text-[#0665B2]"
           >
             View user management →
           </Link>
@@ -187,7 +187,7 @@ export default function AdminDashboard() {
         action={
           <Link
             to="/directory"
-            className="text-xs font-semibold text-indigo-700 hover:text-indigo-900"
+            className="text-xs font-semibold text-[#0878D1] hover:text-[#0665B2]"
           >
             View all directory members →
           </Link>

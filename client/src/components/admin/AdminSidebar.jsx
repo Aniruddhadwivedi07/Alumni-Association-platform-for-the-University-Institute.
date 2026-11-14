@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import nstLogo from '../../assets/nst-logo.png'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/admin', icon: '📊', end: true },
@@ -17,18 +18,18 @@ export default function AdminSidebar({ mobileOpen, onCloseMobile }) {
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
       isActive
-        ? 'bg-indigo-700 text-white shadow-sm'
+        ? 'bg-[#0878D1] text-white shadow-xs'
         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
     }`
 
   const content = (
     <div className="flex h-full flex-col bg-slate-900 text-slate-100">
-      <div className="flex h-16 items-center justify-between border-b border-slate-800 px-6">
-        <NavLink to="/admin" className="flex items-center gap-2 font-bold text-white tracking-tight" onClick={onCloseMobile}>
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-extrabold text-white">
-            AA
-          </span>
-          <span className="text-base">Admin Portal</span>
+      <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5">
+        <NavLink to="/admin" className="flex items-center gap-2.5" onClick={onCloseMobile}>
+          <div className="rounded bg-white p-1">
+            <img src={nstLogo} alt="NST" className="h-6 w-auto object-contain" />
+          </div>
+          <span className="text-sm font-bold tracking-tight text-white">Admin Console</span>
         </NavLink>
         {mobileOpen && (
           <button
@@ -44,7 +45,7 @@ export default function AdminSidebar({ mobileOpen, onCloseMobile }) {
 
       <div className="px-4 py-3">
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Main Navigation
+          Management Modules
         </span>
       </div>
 
@@ -64,8 +65,8 @@ export default function AdminSidebar({ mobileOpen, onCloseMobile }) {
       </nav>
 
       <div className="border-t border-slate-800 p-4 text-xs text-slate-400">
-        <p className="font-semibold text-slate-300">GEC Admin Console</p>
-        <p className="mt-0.5">Role: Administrator</p>
+        <p className="font-semibold text-slate-200">NST Alumni Admin Console</p>
+        <p className="mt-0.5 text-slate-500">Newton School of Technology</p>
       </div>
     </div>
   )

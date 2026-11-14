@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  /* Official NST Color Palette mapped to theme */
+  --color-indigo-50: #EAF2FF;
+  --color-indigo-100: #D0E4FF;
+  --color-indigo-200: #A8CEFF;
+  --color-indigo-300: #70B0FF;
+  --color-indigo-400: #388FFF;
+  --color-indigo-500: #0878D1;
+  --color-indigo-600: #0878D1;
+  --color-indigo-700: #0665B2;
+  --color-indigo-800: #054C87;
+  --color-indigo-900: #064477;
+  --color-indigo-950: #002D54;
+
+  /* Explicit NST Design Tokens */
+  --color-nst-primary: #0878D1;
+  --color-nst-primary-hover: #0665B2;
+  --color-nst-navy: #004B87;
+  --color-nst-dark: #064477;
+  --color-nst-deep: #172B45;
+  --color-nst-light: #EAF2FF;
+  --color-nst-ice: #F0F6FF;
+  --color-nst-surface: #F7F9FC;
+  --color-nst-border: #E2E8F0;
+  --color-nst-text: #172B45;
+  --color-nst-muted: #64748B;
+}
+
 *,
 *::before,
 *::after {
@@ -8,14 +36,15 @@
 
 html {
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  font-family: Arial, sans-serif;
-  color: #0f172a;
-  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #172B45;
+  background-color: #F7F9FC;
 }
 
 img,
@@ -36,6 +65,6 @@ table {
 }
 
 a:focus-visible, button:focus-visible {
-  outline: 3px solid #4f46e5;
+  outline: 3px solid #0878D1;
   outline-offset: 4px;
 }

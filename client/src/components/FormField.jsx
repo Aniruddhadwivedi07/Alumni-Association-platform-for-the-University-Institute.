@@ -8,7 +8,7 @@ export default function FormField({ label, name, error, ...props }) {
         name={name}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF]"
         {...props}
       />
       {error && <p id={errorId} className="text-sm text-red-700">{error}</p>}

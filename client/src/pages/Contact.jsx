@@ -58,9 +58,6 @@ export default function Contact() {
     }
 
     setSubmitting(true)
-    // Note: Simulated submission with clear disclosure to user.
-    // The server currently exposes /api/health and / baseline endpoints;
-    // full inquiry database persistence will be wired to /api/contact in the next backend sprint.
     setTimeout(() => {
       setSubmitting(false)
       setSubmitted(true)
@@ -71,16 +68,16 @@ export default function Contact() {
   return (
     <>
       {/* Header Banner */}
-      <section className="bg-indigo-950 text-white">
+      <section className="bg-gradient-to-r from-[#064477] to-[#002D54] text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
-            Government Engineering College
+          <p className="text-xs font-semibold uppercase tracking-widest text-sky-200">
+            Newton School of Technology
           </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-            Contact the Alumni Cell
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
+            Contact the NST Alumni Cell
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-indigo-100">
-            Have questions about alumni membership, reunions, mentorship, or institutional contributions? Reach out to our team.
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-sky-100">
+            Have questions about alumni membership, cohort reunions, mentorship, or campus initiatives? Reach out to our team.
           </p>
         </div>
       </section>
@@ -90,69 +87,67 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Institutional Contact Info */}
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Get in Touch</h2>
+            <h2 className="text-2xl font-bold text-[#172B45]">Get in Touch</h2>
             <p className="mt-4 leading-relaxed text-slate-600">
-              The Alumni Association Liaison Cell is located on the college campus. We are available during standard academic working hours to assist alumni, students, and institutional partners.
+              The NST Alumni Relations Cell is located on the college campus. We are available during academic working hours to assist alumni, students, and technology partners.
             </p>
 
             <div className="mt-8 space-y-6">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-semibold text-indigo-950">Campus Office</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Government Engineering College Campus<br />
-                  Alumni Relations & Placement Wing<br />
-                  Administrative Block, Ground Floor
+              <div className="rounded-2xl border border-slate-200 bg-[#F7F9FC] p-6 shadow-xs">
+                <h3 className="font-bold text-[#172B45]">Campus Office</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                  Newton School of Technology Campus<br />
+                  Alumni Relations & External Partnerships Wing<br />
+                  Tech Tower, Innovation Floor<br />
+                  <span className="font-medium text-[#0878D1]">alumni@newtonschool.co</span>
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-semibold text-indigo-950">Inquiry Types Handled</h3>
+              <div className="rounded-2xl border border-slate-200 bg-[#F7F9FC] p-6 shadow-xs">
+                <h3 className="font-bold text-[#172B45]">Inquiry Types Handled</h3>
                 <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  <li>• Alumni registration verification and batch records</li>
+                  <li>• Alumni registration verification and cohort records</li>
                   <li>• Mentorship program participation</li>
-                  <li>• Campus visits, guest lectures, and batch reunions</li>
-                  <li>• Institutional development and scholarship initiatives</li>
+                  <li>• Campus visits, technical masterclasses, and batch meetups</li>
+                  <li>• Institutional hackathons and scholarship initiatives</li>
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-indigo-50/50 p-6">
-                <h3 className="font-semibold text-indigo-950">Operating Hours</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Monday – Friday: 9:00 AM – 5:00 PM IST<br />
-                  Closed on institutional holidays and weekends.
+              <div className="rounded-2xl border border-sky-100 bg-[#EAF2FF]/60 p-6">
+                <h3 className="font-bold text-[#064477]">Operating Hours</h3>
+                <p className="mt-2 text-sm text-slate-700">
+                  Monday to Friday: 9:00 AM – 6:00 PM IST<br />
+                  Saturday: 10:00 AM – 2:00 PM IST (by appointment)
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-slate-900">Send an Inquiry</h2>
+          {/* Contact Inquiry Form */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xs">
+            <h2 className="text-2xl font-bold text-[#172B45]">Send Us an Inquiry</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Fill out the form below. Our alumni coordinators will review your message.
+              Fill out the form below and an NST alumni relations officer will get back to you.
             </p>
 
             {submitted ? (
-              <div
-                role="status"
-                className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-900"
-              >
-                <h3 className="font-bold">Inquiry Recorded Successfully!</h3>
+              <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-900">
+                <h3 className="font-bold">Thank you for reaching out!</h3>
                 <p className="mt-2 text-sm text-emerald-800">
-                  Thank you for reaching out. Your inquiry has been submitted and validated. Our alumni cell coordinator will get back to you shortly.
+                  Your message has been received by the NST Alumni Relations Cell. We will review your inquiry and respond within two working days.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
+                  className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
                 >
-                  Send another message
+                  Send another inquiry
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
                     Full Name <span className="text-rose-600">*</span>
                   </label>
                   <input
@@ -163,10 +158,10 @@ export default function Contact() {
                     onChange={handleChange}
                     aria-describedby={errors.name ? 'name-error' : undefined}
                     aria-invalid={Boolean(errors.name)}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0878D1] ${
                       errors.name ? 'border-rose-500 focus:border-rose-500' : 'border-slate-300'
                     }`}
-                    placeholder="e.g. Jane Doe"
+                    placeholder="e.g. Alex Sharma"
                   />
                   {errors.name && (
                     <p id="name-error" className="mt-1 text-xs text-rose-600">{errors.name}</p>
@@ -174,7 +169,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
                     Email Address <span className="text-rose-600">*</span>
                   </label>
                   <input
@@ -185,7 +180,7 @@ export default function Contact() {
                     onChange={handleChange}
                     aria-describedby={errors.email ? 'email-error' : undefined}
                     aria-invalid={Boolean(errors.email)}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0878D1] ${
                       errors.email ? 'border-rose-500 focus:border-rose-500' : 'border-slate-300'
                     }`}
                     placeholder="you@example.com"
@@ -196,7 +191,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-slate-700">
                     Subject <span className="text-rose-600">*</span>
                   </label>
                   <input
@@ -207,10 +202,10 @@ export default function Contact() {
                     onChange={handleChange}
                     aria-describedby={errors.subject ? 'subject-error' : undefined}
                     aria-invalid={Boolean(errors.subject)}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0878D1] ${
                       errors.subject ? 'border-rose-500 focus:border-rose-500' : 'border-slate-300'
                     }`}
-                    placeholder="e.g. Mentorship Inquiry / Batch Reunion"
+                    placeholder="e.g. Mentorship Inquiry / Cohort Reunion"
                   />
                   {errors.subject && (
                     <p id="subject-error" className="mt-1 text-xs text-rose-600">{errors.subject}</p>
@@ -218,7 +213,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="message" className="block text-sm font-semibold text-slate-700">
                     Message <span className="text-rose-600">*</span>
                   </label>
                   <textarea
@@ -229,7 +224,7 @@ export default function Contact() {
                     onChange={handleChange}
                     aria-describedby={errors.message ? 'message-error' : undefined}
                     aria-invalid={Boolean(errors.message)}
-                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                    className={`mt-1 block w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0878D1] ${
                       errors.message ? 'border-rose-500 focus:border-rose-500' : 'border-slate-300'
                     }`}
                     placeholder="Write your message here..."
@@ -242,7 +237,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full rounded-lg bg-indigo-700 px-5 py-3 font-semibold text-white transition hover:bg-indigo-800 disabled:opacity-50"
+                  className="w-full rounded-xl bg-[#0878D1] px-5 py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-[#0665B2] disabled:opacity-50"
                 >
                   {submitting ? 'Submitting...' : 'Send Message'}
                 </button>

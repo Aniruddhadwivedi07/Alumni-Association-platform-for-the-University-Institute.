@@ -16,11 +16,11 @@ export default function AdminHeader({ onOpenMobile }) {
           <span className="text-xl">☰</span>
         </button>
         <div>
-          <span className="rounded bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-800">
-            Internal Platform
+          <span className="rounded bg-[#EAF2FF] px-2 py-0.5 text-xs font-semibold text-[#0878D1]">
+            NST Portal
           </span>
           <h2 className="text-sm font-semibold text-slate-900 sm:text-base">
-            Administration Workspace
+            Alumni Administration Workspace
           </h2>
         </div>
       </div>
@@ -28,7 +28,7 @@ export default function AdminHeader({ onOpenMobile }) {
       <div className="flex items-center gap-3 sm:gap-4">
         <Link
           to="/"
-          className="text-xs font-medium text-slate-600 hover:text-indigo-600 sm:text-sm"
+          className="text-xs font-medium text-slate-600 hover:text-[#0878D1] sm:text-sm"
         >
           ← Public Site
         </Link>
@@ -38,7 +38,7 @@ export default function AdminHeader({ onOpenMobile }) {
             <p className="text-xs font-semibold text-slate-800">
               {session?.profile?.fullName || session?.email || 'Administrator'}
             </p>
-            <p className="text-xs text-slate-500">{session?.role || 'ADMIN'}</p>
+            <p className="text-xs text-slate-500">Newton School of Technology • {session?.role || 'ADMIN'}</p>
           </div>
           <button
             type="button"

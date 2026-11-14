@@ -44,7 +44,7 @@ export default function CampaignDetails() {
         key: order.keyId,
         amount: order.amount,
         currency: order.currency,
-        name: 'GEC Alumni Association',
+        name: 'NST Alumni Association',
         description: campaign.title,
         order_id: order.orderId,
         handler: async (payment) => {

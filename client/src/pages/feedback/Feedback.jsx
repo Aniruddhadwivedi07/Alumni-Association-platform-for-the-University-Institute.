@@ -53,7 +53,7 @@ export default function Feedback() {
     setServerError('')
 
     try {
-      await apiRequest('/feedback', {
+      await apiRequest('/surveys/feedback', {
         method: 'POST',
         body: JSON.stringify({
           category: formData.category,
@@ -63,8 +63,8 @@ export default function Feedback() {
         }),
       })
       setSubmitted(true)
-    } catch (error) {
-      setServerError(error.message)
+    } catch (err) {
+      setServerError(err.message || 'Failed to submit feedback. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -72,98 +72,104 @@ export default function Feedback() {
 
   if (submitted) {
     return (
-      <section className="mx-auto max-w-2xl px-6 py-16 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-2xl text-emerald-600">
-          ✓
+      <section className="mx-auto max-w-xl px-4 py-16 text-center sm:px-6">
+        <div className="rounded-2xl border border-emerald-200 bg-white p-8 shadow-xs">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-2xl text-emerald-600">
+            ✓
+          </div>
+          <h2 className="mt-4 text-2xl font-bold text-[#172B45]">Thank You for Your Feedback!</h2>
+          <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+            Your insights have been recorded and forwarded to the NST Alumni Relations and Academic Council. Constructive feedback helps us continuously improve community programs.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSubmitted(false)
+              setFormData({ category: 'GENERAL', subject: '', rating: '5', message: '' })
+            }}
+            className="mt-6 rounded-xl bg-[#0878D1] px-6 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#0665B2]"
+          >
+            Submit Another Response
+          </button>
         </div>
-        <h1 className="mt-4 text-2xl font-bold text-slate-900">Thank You for Your Feedback!</h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Your input has been recorded and will be reviewed by the Alumni Association team to improve institutional programs and services.
-        </p>
-        <button
-          type="button"
-          onClick={() => {
-            setFormData({ category: 'GENERAL', subject: '', rating: '5', message: '' })
-            setSubmitted(false)
-          }}
-          className="mt-6 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-        >
-          Submit Another Response
-        </button>
       </section>
     )
   }
 
   return (
-    <section className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-slate-900">Alumni Feedback & Suggestions</h1>
-      <p className="mt-2 text-sm text-slate-600">
-        Share your experience, suggest alumni activities, or report issues directly to the administration.
-      </p>
+    <section className="mx-auto max-w-xl px-4 py-12 sm:px-6">
+      <div className="mb-6">
+        <span className="inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
+          NST Community Voice
+        </span>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#172B45]">
+          Community Feedback
+        </h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Share your suggestions, feature requests, and campus thoughts with the Newton School of Technology Alumni Council.
+        </p>
+      </div>
 
       {serverError && (
-        <div className="mt-6 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
           {serverError}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8" noValidate>
         {/* Category */}
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-slate-700">
-            Category <span className="text-rose-500">*</span>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+            Category
           </label>
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF]"
           >
-            <option value="GENERAL">General Feedback</option>
-            <option value="EVENTS">Events & Reunions</option>
-            <option value="MENTORSHIP">Mentorship Programs</option>
-            <option value="JOBS">Job Portal & Careers</option>
-            <option value="WEBSITE">Platform & Technical Support</option>
+            <option value="GENERAL">General Platform & Experience</option>
+            <option value="CURRICULUM">Curriculum & Technical Upskilling</option>
+            <option value="CAMPUS">Campus Facilities & Labs</option>
+            <option value="CAREERS">Placement & Alumni Referrals</option>
+            <option value="MENTORSHIP">Mentorship Program</option>
+            <option value="EVENTS">Reunions & Hackathons</option>
           </select>
         </div>
 
         {/* Rating */}
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-slate-700">
-            Overall Experience Rating (1–5) <span className="text-rose-500">*</span>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
+            Overall Experience Rating (1 = Poor, 5 = Excellent)
           </label>
-          <div className="flex items-center gap-3">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <label key={star} className="inline-flex items-center gap-1.5 cursor-pointer text-sm">
-                <input
-                  type="radio"
-                  name="rating"
-                  value={String(star)}
-                  checked={formData.rating === String(star)}
-                  onChange={handleChange}
-                  className="text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="font-semibold text-slate-700">{star} ★</span>
-              </label>
-            ))}
-          </div>
+          <select
+            name="rating"
+            value={formData.rating}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF]"
+          >
+            <option value="5">⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
+            <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+            <option value="3">⭐⭐⭐ (3 - Good)</option>
+            <option value="2">⭐⭐ (2 - Needs Improvement)</option>
+            <option value="1">⭐ (1 - Unsatisfactory)</option>
+          </select>
           {errors.rating && <p className="mt-1 text-xs text-rose-600">{errors.rating}</p>}
         </div>
 
         {/* Subject */}
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-slate-700">
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
             Subject <span className="text-rose-500">*</span>
           </label>
           <input
-            type="text"
             name="subject"
             value={formData.subject}
             onChange={handleChange}
             maxLength={150}
-            placeholder="e.g. Suggestions for the 2026 Annual Reunion"
-            className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-800 focus:outline-none ${
-              errors.subject ? 'border-rose-400' : 'border-slate-300 focus:border-indigo-400'
+            placeholder="e.g. Suggestions for the 2026 NST Tech Meetup"
+            className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF] ${
+              errors.subject ? 'border-rose-400' : 'border-slate-300'
             }`}
           />
           {errors.subject && <p className="mt-1 text-xs text-rose-600">{errors.subject}</p>}
@@ -171,7 +177,7 @@ export default function Feedback() {
 
         {/* Message */}
         <div>
-          <label className="mb-1 block text-xs font-semibold uppercase text-slate-700">
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-700">
             Detailed Message <span className="text-rose-500">*</span>
           </label>
           <textarea
@@ -180,13 +186,13 @@ export default function Feedback() {
             onChange={handleChange}
             rows={5}
             maxLength={3000}
-            placeholder="Please detail your feedback, concerns, or constructive recommendations…"
-            className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-800 focus:outline-none resize-none ${
-              errors.message ? 'border-rose-400' : 'border-slate-300 focus:border-indigo-400'
+            placeholder="Please detail your feedback, recommendations, or questions…"
+            className={`w-full rounded-xl border px-3.5 py-2.5 text-sm text-slate-800 outline-none transition resize-none focus:border-[#0878D1] focus:ring-2 focus:ring-[#EAF2FF] ${
+              errors.message ? 'border-rose-400' : 'border-slate-300'
             }`}
           />
           <div className="flex justify-between mt-1 text-xs text-slate-400">
-            <span>{errors.message ? <span className="text-rose-600">{errors.message}</span> : 'Clear and actionable insights are appreciated.'}</span>
+            <span>{errors.message ? <span className="text-rose-600">{errors.message}</span> : 'Clear and constructive insights are appreciated.'}</span>
             <span>{formData.message.length}/3000</span>
           </div>
         </div>
@@ -194,7 +200,7 @@ export default function Feedback() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50"
+          className="w-full rounded-xl bg-[#0878D1] py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-[#0665B2] disabled:opacity-50"
         >
           {submitting ? 'Submitting…' : 'Submit Feedback'}
         </button>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField'
 import { useAuth } from '../../context/AuthContext'
+import nstLogo from '../../assets/nst-logo.png'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -31,13 +32,43 @@ export default function Login() {
   }
 
   return (
-    <section className="mx-auto max-w-lg px-6 py-16">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
-        <p className="text-sm font-semibold uppercase tracking-wider text-indigo-700">Welcome back</p>
-        <h1 className="mt-2 text-3xl font-bold">Sign in</h1>
-        {location.state?.message && <p className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">{location.state.message}</p>}
+    <section className="mx-auto max-w-md px-4 py-16 sm:px-6">
+      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xs sm:p-10">
+        <div className="flex flex-col items-center text-center">
+          <Link to="/" className="inline-block transition-opacity hover:opacity-90">
+            <img
+              src={nstLogo}
+              alt="Newton School of Technology"
+              className="h-10 w-auto object-contain"
+            />
+          </Link>
+          <span className="mt-3 inline-block rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-semibold text-[#0878D1]">
+            NST Alumni Association
+          </span>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-[#172B45] sm:text-3xl">
+            Welcome back
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Sign in to access your alumni profile & services
+          </p>
+        </div>
+
+        {location.state?.message && (
+          <p className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+            {location.state.message}
+          </p>
+        )}
+
         <form onSubmit={submit} className="mt-8 space-y-5" noValidate>
-          <FormField name="email" label="Email address" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+          <FormField
+            name="email"
+            label="Email address"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
           <div className="relative">
             <FormField
               name="password"
@@ -57,10 +88,25 @@ export default function Login() {
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
-          {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
-          <button disabled={loading} className="w-full rounded-lg bg-indigo-700 px-5 py-3 font-semibold text-white hover:bg-indigo-800 disabled:opacity-60">{loading ? 'Signing in…' : 'Sign in'}</button>
+          {error && (
+            <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">
+              {error}
+            </p>
+          )}
+          <button
+            disabled={loading}
+            className="w-full rounded-xl bg-[#0878D1] px-5 py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-[#0665B2] disabled:opacity-60"
+          >
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
         </form>
-        <p className="mt-6 text-sm text-slate-600">New to the community? <Link to="/register" className="font-semibold text-indigo-700 hover:underline">Register</Link></p>
+
+        <p className="mt-6 text-center text-sm text-slate-600">
+          New to the community?{' '}
+          <Link to="/register" className="font-semibold text-[#0878D1] hover:underline">
+            Register
+          </Link>
+        </p>
       </div>
     </section>
   )
