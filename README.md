@@ -169,64 +169,67 @@ Testing	Node.js Test Runner
 
 📁 Project Structure
 
-Alumni-Association-platform-for-the-University-Institute/
+Alumni-Association-platform/
 │
-├── client/                         # React frontend
-│   ├── public/
+├── client/                              # React + Vite frontend
+│   │
+│   ├── public/                          # Static assets
+│   │
 │   ├── src/
-│   │   ├── components/              # Reusable UI components
-│   │   │   ├── admin/
+│   │   ├── components/                  # Reusable UI components
+│   │   │   ├── admin/                   # Admin-specific components
+│   │   │   ├── AdminRoute.jsx
+│   │   │   ├── ProtectedRoute.jsx
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── Footer.jsx
-│   │   │   ├── ProtectedRoute.jsx
-│   │   │   └── AdminRoute.jsx
+│   │   │   ├── Layout.jsx
+│   │   │   └── FormField.jsx
 │   │   │
-│   │   ├── context/                 # Global application state
-│   │   ├── lib/                     # API and utility functions
-│   │   ├── pages/                   # Application pages
+│   │   ├── context/                     # Global state management
+│   │   ├── lib/                         # API clients and utilities
+│   │   ├── pages/                       # Application pages
 │   │   │   ├── admin/
 │   │   │   ├── auth/
 │   │   │   ├── directory/
 │   │   │   ├── donations/
 │   │   │   ├── events/
+│   │   │   ├── feedback/
 │   │   │   ├── jobs/
 │   │   │   ├── mentorship/
 │   │   │   ├── profile/
 │   │   │   └── stories/
 │   │   │
-│   │   ├── test/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
+│   │   ├── test/                        # Frontend tests
+│   │   ├── App.jsx                      # Application routes
+│   │   ├── main.jsx                     # React entry point
+│   │   └── index.css                    # Global styles
 │   │
-│   ├── .env.example
+│   ├── .env.example                     # Frontend environment template
 │   └── package.json
 │
-├── server/                          # Express backend
+├── server/                              # Node.js + Express backend
+│   │
 │   ├── prisma/
-│   │   ├── migrations/
-│   │   ├── schema.prisma
-│   │   └── seed.js
+│   │   ├── migrations/                  # Database migrations
+│   │   ├── schema.prisma                # Database schema
+│   │   └── seed.js                      # Database seed script
 │   │
 │   ├── src/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   ├── validators/
-│   │   ├── prisma.js
-│   │   └── server.js
+│   │   ├── controllers/                 # Request handlers
+│   │   ├── middleware/                  # Authentication and RBAC
+│   │   ├── routes/                      # API route definitions
+│   │   ├── validators/                  # Zod validation schemas
+│   │   ├── prisma.js                    # Prisma client
+│   │   └── server.js                    # Express entry point
 │   │
-│   ├── test/
-│   ├── .env.example
+│   ├── test/                            # Backend tests
+│   ├── .env.example                     # Backend environment template
 │   └── package.json
 │
-├── docs/                            # Project documentation
+├── docs/                                # Project documentation
 ├── .gitignore
 └── README.md
-
-Note: The structure above represents the major project directories; individual files may vary as development progresses.
-
-⸻
+--
 
 ⚙️ Getting Started
 
