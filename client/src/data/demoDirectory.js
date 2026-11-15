@@ -1,0 +1,147 @@
+/**
+ * Demo / Placeholder Alumni Directory Profiles
+ *
+ * NOTE: These profiles are realistic-looking but fictional placeholders.
+ * Displayed ONLY when the API returns an empty array.
+ * Each profile is clearly labeled as a DEMO PROFILE.
+ * Never inserted into the database or treated as verified registered accounts.
+ */
+
+export const DEMO_ALUMNI = [
+  {
+    id: 'demo-alumni-1',
+    userId: 'demo-user-1',
+    isDemo: true,
+    fullName: 'Dr. Aarav Mehta',
+    graduationYear: 2017,
+    department: 'Computer Science & Engineering',
+    currentJobTitle: 'Staff Software Engineer',
+    currentCompany: 'Google Cloud Systems',
+    industry: 'Software Engineering',
+    bio: 'Specializing in large-scale distributed systems and Kubernetes infrastructure. Active technical mentor for open-source cloud foundations and guest lecturer on high-throughput backend design.',
+    skills: 'Distributed Systems, Go, Kubernetes, Cloud Architecture, Microservices',
+    linkedinUrl: 'https://linkedin.com/in/demo-aarav-mehta',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'AM',
+    location: 'Bengaluru, India'
+  },
+  {
+    id: 'demo-alumni-2',
+    userId: 'demo-user-2',
+    isDemo: true,
+    fullName: 'Shreya Narayanan',
+    graduationYear: 2019,
+    department: 'Artificial Intelligence & Data Science',
+    currentJobTitle: 'Senior Machine Learning Scientist',
+    currentCompany: 'DeepMind Health Insights',
+    industry: 'Artificial Intelligence & Machine Learning',
+    bio: 'Leading generative vision models for predictive pathology and automated diagnostic triaging. Published author in NeurIPS and CVPR workshops.',
+    skills: 'PyTorch, Generative AI, Computer Vision, LLMs, Medical Imaging',
+    linkedinUrl: 'https://linkedin.com/in/demo-shreya-narayanan',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'SN',
+    location: 'Hyderabad, India'
+  },
+  {
+    id: 'demo-alumni-3',
+    userId: 'demo-user-3',
+    isDemo: true,
+    fullName: 'Kunal Singhania',
+    graduationYear: 2016,
+    department: 'Information Technology',
+    currentJobTitle: 'VP of Engineering & Co-Founder',
+    currentCompany: 'NexPay Payments Global',
+    industry: 'Finance and FinTech',
+    bio: 'Bootstrapped instant cross-border settlement rails handling $120M in monthly transactional volume. Passionate about real-time banking APIs and regulatory automation.',
+    skills: 'FinTech, Core Banking, Systems Design, Payment Gateways, Security',
+    linkedinUrl: 'https://linkedin.com/in/demo-kunal-singhania',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'KS',
+    location: 'Mumbai, India'
+  },
+  {
+    id: 'demo-alumni-4',
+    userId: 'demo-user-4',
+    isDemo: true,
+    fullName: 'Ritika Sengupta',
+    graduationYear: 2018,
+    department: 'Mechanical Engineering',
+    currentJobTitle: 'Founder & Chief Executive Officer',
+    currentCompany: 'EcoDrive Technologies',
+    industry: 'Entrepreneurship',
+    bio: 'Building modular battery swapping ecosystems and lightweight electric mobility for Tier-2 cities. Forbes 30 Under 30 Asia honoree in CleanTech.',
+    skills: 'CleanTech, Hardware IoT, Business Strategy, Venture Capital, Operations',
+    linkedinUrl: 'https://linkedin.com/in/demo-ritika-sengupta',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'RS',
+    location: 'Pune, India'
+  },
+  {
+    id: 'demo-alumni-5',
+    userId: 'demo-user-5',
+    isDemo: true,
+    fullName: 'Vikramaditya Iyer',
+    graduationYear: 2020,
+    department: 'Electronics & Communication',
+    currentJobTitle: 'Principal Product Manager',
+    currentCompany: 'Stripe Merchant Solutions',
+    industry: 'Product Management',
+    bio: 'Oversees global checkout optimization, merchant billing automation, and developer SDKs. Enthusiast for data-driven product experiments and product-led growth frameworks.',
+    skills: 'Product Discovery, Experimentation, Growth, B2B SaaS, User Experience',
+    linkedinUrl: 'https://linkedin.com/in/demo-vikram-iyer',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'VI',
+    location: 'Bengaluru, India'
+  },
+  {
+    id: 'demo-alumni-6',
+    userId: 'demo-user-6',
+    isDemo: true,
+    fullName: 'Pooja Venkatesh',
+    graduationYear: 2021,
+    department: 'Electrical Engineering',
+    currentJobTitle: 'Lead Data Scientist',
+    currentCompany: 'QuantumPulse Analytics',
+    industry: 'Data Science',
+    bio: 'Formulating causal inference pipelines and algorithmic personalization engines for multi-sided consumer marketplaces. Mentors young women in engineering.',
+    skills: 'Causal Inference, Python, SQL, Statistics, Machine Learning, Tableau',
+    linkedinUrl: 'https://linkedin.com/in/demo-pooja-venkatesh',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'PV',
+    location: 'Gurugram, India'
+  },
+  {
+    id: 'demo-alumni-7',
+    userId: 'demo-user-7',
+    isDemo: true,
+    fullName: 'Tariq Al-Mansoor',
+    graduationYear: 2015,
+    department: 'Civil Engineering',
+    currentJobTitle: 'Director of Smart Infrastructure',
+    currentCompany: 'UrbanEdge Consulting',
+    industry: 'Entrepreneurship',
+    bio: 'Overseeing sustainable civil architecture and smart sensor deployment for municipal transit corridors. Advocate of resilient civic infrastructure.',
+    skills: 'Urban Planning, BIM, Project Leadership, Sustainable Design, IoT',
+    linkedinUrl: 'https://linkedin.com/in/demo-tariq-mansoor',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'TM',
+    location: 'Dubai, UAE'
+  },
+  {
+    id: 'demo-alumni-8',
+    userId: 'demo-user-8',
+    isDemo: true,
+    fullName: 'Ananya Deshpande',
+    graduationYear: 2022,
+    department: 'Computer Science & Engineering',
+    currentJobTitle: 'AI Research Engineer',
+    currentCompany: 'Anthropic Systems Labs',
+    industry: 'Artificial Intelligence & Machine Learning',
+    bio: 'Focusing on interpretability in large transformers and reinforcement learning with human feedback (RLHF). Former university hackathon chair.',
+    skills: 'Transformer Architecture, PyTorch, RLHF, Alignment, Model Interpretability',
+    linkedinUrl: 'https://linkedin.com/in/demo-ananya-deshpande',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80',
+    avatarInitials: 'AD',
+    location: 'San Francisco, USA'
+  }
+]

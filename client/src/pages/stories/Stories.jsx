@@ -25,40 +25,38 @@ export default function Stories() {
   const [error, setError] = useState('')
   const [activeSampleModal, setActiveSampleModal] = useState(null)
 
-  useEffect(() => {
-    let isMounted = true
+  const fetchStories = () => {
+    setLoading(true)
     const params = new URLSearchParams({ page: String(page), limit: '9' })
     if (search.trim()) params.set('search', search.trim())
 
     apiRequest(`/success-stories?${params}`)
       .then((result) => {
-        if (!isMounted) return
         setStories(result.data || [])
         setPages(result.pagination?.totalPages || 1)
         setError('')
       })
       .catch((err) => {
-        if (!isMounted) return
         setError(err.message || 'Unable to load stories at this time.')
       })
       .finally(() => {
-        if (isMounted) setLoading(false)
+        setLoading(false)
       })
+  }
 
-    return () => {
-      isMounted = false
-    }
+  useEffect(() => {
+    fetchStories()
   }, [page, search])
 
-  // Determine if using sample placeholder stories
+  // Determine if using demo placeholder stories
   // Rules:
-  // - If error: Show error state (never silently replace with sample data)
+  // - If error: Show error state with retry (never silently replace with demo data)
   // - If real published stories exist: Show real stories
-  // - If API returns empty array and no search query active: Show sample stories
-  const isUsingSampleStories = !loading && !error && stories.length === 0 && !search.trim()
+  // - If API returns empty array and no search query active: Show demo stories
+  const isUsingDemo = !loading && !error && stories.length === 0 && !search.trim()
 
   // Stories to display based on category filter
-  const displayedStories = isUsingSampleStories ? SAMPLE_STORIES : stories
+  const displayedStories = isUsingDemo ? SAMPLE_STORIES : stories
 
   const filteredStories = displayedStories.filter((story) => {
     if (selectedCategory === 'All Stories') return true
@@ -139,7 +137,7 @@ export default function Stories() {
         </div>
       </div>
 
-      {/* Loading */}
+      {/* Loading Skeleton */}
       {loading && (
         <div role="status" className="mt-16 text-center text-sm text-slate-500">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-[#0878D1] border-r-transparent align-[-0.125em]" />
@@ -147,7 +145,7 @@ export default function Stories() {
         </div>
       )}
 
-      {/* Error state */}
+      {/* Error state with Retry */}
       {!loading && error && (
         <div role="alert" className="mt-12 rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-800">
           <div className="flex items-center gap-2">
@@ -157,18 +155,7 @@ export default function Stories() {
           <p className="mt-2 text-rose-700">{error}</p>
           <button
             type="button"
-            onClick={() => {
-              setLoading(true)
-              setError('')
-              apiRequest(`/success-stories?page=${page}&limit=9`)
-                .then((result) => {
-                  setStories(result.data || [])
-                  setPages(result.pagination?.totalPages || 1)
-                  setError('')
-                })
-                .catch((err) => setError(err.message || 'Unable to load stories.'))
-                .finally(() => setLoading(false))
-            }}
+            onClick={fetchStories}
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-rose-700"
           >
             Retry Loading
@@ -179,16 +166,16 @@ export default function Stories() {
       {/* Main Content Area */}
       {!loading && !error && (
         <>
-          {/* Sample stories disclaimer banner */}
-          {isUsingSampleStories && (
-            <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 sm:p-5 text-amber-900 shadow-xs">
+          {/* Demo stories disclaimer banner */}
+          {isUsingDemo && (
+            <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 sm:p-5 text-amber-900 shadow-xs">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 text-xl">💡</span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-amber-200/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
-                        Sample Preview
+                      <span className="rounded-md bg-amber-200/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
+                        DEMO STORIES
                       </span>
                       <h3 className="text-sm font-bold text-amber-900">
                         Illustrative Alumni Profiles
@@ -213,8 +200,8 @@ export default function Stories() {
           {filteredStories.length > 0 ? (
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredStories.map((story) => {
-                // If it's a sample placeholder story
-                if (story.isSample) {
+                // If it's a demo placeholder story
+                if (story.isDemo || story.isSample) {
                   return (
                     <article
                       key={story.id}
@@ -230,9 +217,10 @@ export default function Stories() {
                               className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                               loading="lazy"
                               onError={(e) => {
-                                // Fallback avatar if image fails to load
                                 e.target.style.display = 'none'
-                                e.target.nextElementSibling.style.display = 'flex'
+                                if (e.target.nextElementSibling) {
+                                  e.target.nextElementSibling.style.display = 'flex'
+                                }
                               }}
                             />
                           ) : null}
@@ -243,9 +231,9 @@ export default function Stories() {
                             {story.avatarInitials || 'AL'}
                           </div>
 
-                          {/* SAMPLE Watermark / Pill */}
+                          {/* DEMO STORY Label */}
                           <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-md bg-amber-500/90 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs shadow-xs">
-                            <span>SAMPLE</span>
+                            <span>DEMO STORY</span>
                           </div>
 
                           {/* Graduation Year */}
@@ -256,7 +244,6 @@ export default function Stories() {
 
                         {/* Card Body */}
                         <div className="flex flex-1 flex-col p-6">
-                          {/* Author & Role info */}
                           <div>
                             <h3 className="text-base font-bold text-slate-900">
                               {story.authorName}
@@ -274,12 +261,10 @@ export default function Stories() {
                             )}
                           </div>
 
-                          {/* Story Title */}
                           <h4 className="mt-3 text-sm font-bold text-[#172B45] leading-snug line-clamp-2">
                             {story.title}
                           </h4>
 
-                          {/* Summary */}
                           <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-3">
                             {story.summary}
                           </p>
@@ -293,7 +278,7 @@ export default function Stories() {
                           onClick={() => setActiveSampleModal(story)}
                           className="inline-flex items-center gap-1 text-xs font-semibold text-[#0878D1] hover:underline cursor-pointer"
                         >
-                          View Sample Profile →
+                          View Demo Story →
                         </button>
                         <span className="text-[10px] uppercase font-semibold text-slate-400">
                           Placeholder
@@ -361,7 +346,6 @@ export default function Stories() {
               })}
             </div>
           ) : (
-            /* No Results state for active search or category filters */
             <div className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-xs">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#EAF2FF] text-3xl text-[#0878D1]">
                 🔍
@@ -419,7 +403,7 @@ export default function Stories() {
           </div>
 
           {/* Pagination (Only for real stories) */}
-          {!isUsingSampleStories && pages > 1 && (
+          {!isUsingDemo && pages > 1 && (
             <nav aria-label="Story pages" className="mt-12 flex items-center justify-center gap-4">
               <button
                 disabled={page === 1}
@@ -443,7 +427,7 @@ export default function Stories() {
         </>
       )}
 
-      {/* Sample Story Modal Dialog */}
+      {/* Demo Story Modal Dialog */}
       {activeSampleModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs"
@@ -462,10 +446,10 @@ export default function Stories() {
               ✕
             </button>
 
-            {/* Sample pill */}
+            {/* DEMO STORY pill */}
             <div className="flex items-center gap-2">
-              <span className="rounded-md bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800 uppercase tracking-wider">
-                SAMPLE STORY
+              <span className="rounded-md bg-amber-100 border border-amber-200 px-2.5 py-0.5 text-xs font-bold text-amber-800 uppercase tracking-wider">
+                DEMO STORY
               </span>
               <span className="text-xs font-medium text-slate-500">
                 Fictional Alumni Persona
@@ -514,7 +498,7 @@ export default function Stories() {
             {/* Disclaimer & Action */}
             <div className="mt-8 border-t border-slate-100 pt-5 flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-[11px] text-slate-500">
-                This is a sample story created to illustrate alumni achievements on the platform.
+                This is a demo story created to illustrate alumni achievements on the platform.
               </p>
               <div className="flex gap-2">
                 <button

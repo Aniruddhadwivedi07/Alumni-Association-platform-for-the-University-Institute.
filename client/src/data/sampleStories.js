@@ -1,16 +1,17 @@
 /**
- * Sample / Placeholder Alumni Success Stories
+ * Demo / Placeholder Alumni Success Stories
  *
  * NOTE: These stories are realistic-looking but fictional placeholders.
- * They are displayed ONLY when the API returns no published stories so that
- * the Success Stories section does not appear empty.
- * Never present fictional testimonials as verified alumni achievements.
+ * Displayed ONLY when the API returns an empty array.
+ * Each story is clearly labeled as a DEMO STORY.
+ * Never inserted into the database or treated as verified institutional testimonials.
  */
 
 export const SAMPLE_STORIES = [
   {
-    id: 'sample-1',
+    id: 'demo-story-1',
     isSample: true,
+    isDemo: true,
     title: 'Architecting Scalable Cloud Infrastructure at Global Tech',
     authorName: 'Priya Sharma',
     designation: 'Senior Software Engineer',
@@ -25,8 +26,9 @@ export const SAMPLE_STORIES = [
     badgeColor: 'bg-blue-50 text-blue-700 border-blue-200'
   },
   {
-    id: 'sample-2',
+    id: 'demo-story-2',
     isSample: true,
+    isDemo: true,
     title: 'From Campus Project to Series-A AgriTech Startup',
     authorName: 'Rohan Deshmukh',
     designation: 'Co-Founder & CEO',
@@ -41,8 +43,9 @@ export const SAMPLE_STORIES = [
     badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200'
   },
   {
-    id: 'sample-3',
+    id: 'demo-story-3',
     isSample: true,
+    isDemo: true,
     title: 'Doctoral Research in Quantum Nanomaterials in Zurich',
     authorName: 'Ananya Banerjee',
     designation: 'Doctoral Researcher',
@@ -57,8 +60,9 @@ export const SAMPLE_STORIES = [
     badgeColor: 'bg-purple-50 text-purple-700 border-purple-200'
   },
   {
-    id: 'sample-4',
+    id: 'demo-story-4',
     isSample: true,
+    isDemo: true,
     title: 'Scaling Unified Cross-Border Payments Across Emerging Markets',
     authorName: 'Aditya Verma',
     designation: 'Lead Product Manager',
@@ -73,8 +77,9 @@ export const SAMPLE_STORIES = [
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-200'
   },
   {
-    id: 'sample-5',
+    id: 'demo-story-5',
     isSample: true,
+    isDemo: true,
     title: 'Bridging Rural Education Gaps with Solar-Powered Smart Pods',
     authorName: 'Meera Nambiar',
     designation: 'Program Director',
@@ -89,8 +94,9 @@ export const SAMPLE_STORIES = [
     badgeColor: 'bg-rose-50 text-rose-700 border-rose-200'
   },
   {
-    id: 'sample-6',
+    id: 'demo-story-6',
     isSample: true,
+    isDemo: true,
     title: 'Pioneering Medical Imaging Diagnostics with Generative AI',
     authorName: 'Karthik Sundaram',
     designation: 'Staff Machine Learning Scientist',

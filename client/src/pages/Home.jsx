@@ -121,7 +121,7 @@ export default function Home() {
                         </div>
 
                         <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-md bg-amber-500/90 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs shadow-xs">
-                          SAMPLE
+                          DEMO STORY
                         </div>
 
                         <div className="absolute top-3 right-3 rounded-md bg-slate-900/75 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-xs">
@@ -152,7 +152,7 @@ export default function Home() {
                         onClick={() => setActiveSampleModal(story)}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-[#0878D1] hover:underline cursor-pointer"
                       >
-                        View Sample Profile →
+                        View Demo Story →
                       </button>
                       <span className="text-[10px] uppercase font-semibold text-slate-400">
                         Placeholder
@@ -272,7 +272,7 @@ export default function Home() {
 
             <div className="flex items-center gap-2">
               <span className="rounded-md bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800 uppercase tracking-wider">
-                SAMPLE STORY
+                DEMO STORY
               </span>
               <span className="text-xs font-medium text-slate-500">
                 Fictional Alumni Persona
