@@ -167,6 +167,19 @@ Testing	Node.js Test Runner
 
 ⸻
 
+## 📁 Project Structure
+
+The project follows a modular monorepo architecture, separating
+the React frontend, Express backend, and project documentation.
+
+<div align="center">
+  <img
+    src="docs/images/project-structure.png"
+    alt="Alumni Association Platform Project Structure"
+    width="100%"
+  />
+</div>
+
 ⚙️ Getting Started
 
 Follow these instructions to run the project locally.
