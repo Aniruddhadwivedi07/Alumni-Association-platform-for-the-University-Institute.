@@ -37,7 +37,8 @@ async function getAlumniDirectory(req, res, next) {
           { fullName: { contains: search, mode: 'insensitive' } },
           { department: { contains: search, mode: 'insensitive' } },
           { currentCompany: { contains: search, mode: 'insensitive' } },
-          { currentJobTitle: { contains: search, mode: 'insensitive' } }
+          { currentJobTitle: { contains: search, mode: 'insensitive' } },
+          { bio: { contains: search, mode: 'insensitive' } }
         ]
       });
     }
@@ -139,7 +140,76 @@ async function getAlumniDirectory(req, res, next) {
   }
 }
 
+/**
+ * GET /api/directory/alumni/:id
+ * Retrieve single verified alumni profile by ID
+ */
+async function getAlumniById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const profile = await prisma.alumniProfile.findFirst({
+      where: {
+        id,
+        user: {
+          isActive: true,
+          role: {
+            name: ROLES.ALUMNI
+          }
+        }
+      },
+      select: {
+        id: true,
+        userId: true,
+        fullName: true,
+        graduationYear: true,
+        department: true,
+        currentJobTitle: true,
+        currentCompany: true,
+        bio: true,
+        linkedinUrl: true,
+        createdAt: true,
+        user: {
+          select: {
+            role: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Alumni profile not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        id: profile.id,
+        userId: profile.userId,
+        role: profile.user?.role?.name || ROLES.ALUMNI,
+        fullName: profile.fullName,
+        graduationYear: profile.graduationYear,
+        department: profile.department,
+        currentJobTitle: profile.currentJobTitle,
+        currentCompany: profile.currentCompany,
+        bio: profile.bio,
+        linkedinUrl: profile.linkedinUrl,
+        createdAt: profile.createdAt
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
-  getAlumniDirectory
+  getAlumniDirectory,
+  getAlumniById
 };
 
