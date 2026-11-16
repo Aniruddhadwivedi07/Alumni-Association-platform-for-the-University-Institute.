@@ -86,6 +86,13 @@ async function getAlumniDirectory(req, res, next) {
           bio: true,
           linkedinUrl: true,
           createdAt: true,
+          verification: {
+            select: {
+              verificationCode: true,
+              status: true,
+              verifiedAt: true
+            }
+          },
           user: {
             select: {
               role: {
@@ -120,7 +127,12 @@ async function getAlumniDirectory(req, res, next) {
       currentCompany: p.currentCompany,
       bio: p.bio,
       linkedinUrl: p.linkedinUrl,
-      createdAt: p.createdAt
+      createdAt: p.createdAt,
+      verification: p.verification ? {
+        code: p.verification.verificationCode,
+        status: p.verification.status,
+        verifiedAt: p.verification.verifiedAt
+      } : null
     }));
 
     return res.status(200).json({
@@ -200,7 +212,12 @@ async function getAlumniById(req, res, next) {
         currentCompany: profile.currentCompany,
         bio: profile.bio,
         linkedinUrl: profile.linkedinUrl,
-        createdAt: profile.createdAt
+        createdAt: profile.createdAt,
+        verification: profile.verification ? {
+          code: profile.verification.verificationCode,
+          status: profile.verification.status,
+          verifiedAt: profile.verification.verifiedAt
+        } : null
       }
     });
   } catch (error) {

@@ -12,7 +12,11 @@ async function getMyProfile(req, res, next) {
       where: { id: userId },
       include: {
         role: true,
-        alumniProfile: true
+        alumniProfile: {
+          include: {
+            verification: true
+          }
+        }
       }
     });
 
@@ -43,7 +47,12 @@ async function getMyProfile(req, res, next) {
           bio: user.alumniProfile.bio,
           linkedinUrl: user.alumniProfile.linkedinUrl,
           createdAt: user.alumniProfile.createdAt,
-          updatedAt: user.alumniProfile.updatedAt
+          updatedAt: user.alumniProfile.updatedAt,
+          verification: user.alumniProfile.verification ? {
+            code: user.alumniProfile.verification.verificationCode,
+            status: user.alumniProfile.verification.status,
+            verifiedAt: user.alumniProfile.verification.verifiedAt
+          } : null
         }
       }
     });
@@ -155,7 +164,11 @@ async function getProfileByUserId(req, res, next) {
       where: { id: targetUserId },
       include: {
         role: true,
-        alumniProfile: true
+        alumniProfile: {
+          include: {
+            verification: true
+          }
+        }
       }
     });
 
@@ -180,7 +193,12 @@ async function getProfileByUserId(req, res, next) {
         currentJobTitle: user.alumniProfile.currentJobTitle,
         currentCompany: user.alumniProfile.currentCompany,
         bio: user.alumniProfile.bio,
-        linkedinUrl: user.alumniProfile.linkedinUrl
+        linkedinUrl: user.alumniProfile.linkedinUrl,
+        verification: user.alumniProfile.verification ? {
+          code: user.alumniProfile.verification.verificationCode,
+          status: user.alumniProfile.verification.status,
+          verifiedAt: user.alumniProfile.verification.verifiedAt
+        } : null
       }
     });
   } catch (error) {

@@ -10,6 +10,8 @@ const donationRoutes = require('./routes/donation.routes');
 const adminDonationRoutes = require('./routes/adminDonation.routes');
 const successStoryRoutes = require('./routes/successStory.routes');
 const adminSuccessStoryRoutes = require('./routes/adminSuccessStory.routes');
+const verificationRoutes = require('./routes/verification.routes');
+const adminVerificationRoutes = require('./routes/adminVerification.routes');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { sessionMiddleware } = require('./config/session');
 
@@ -77,6 +79,10 @@ function createApp() {
 
   // Admin success story routes
   app.use('/api/admin/success-stories', adminSuccessStoryRoutes);
+
+  // Verification routes
+  app.use('/api/verification', verificationRoutes);
+  app.use('/api/admin/alumni', adminVerificationRoutes);
 
   // Centralized error handling
   app.use('/api/feedback', require('./routes/feedback.routes'));

@@ -6,7 +6,7 @@
     "postinstall": "prisma generate",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "node --test test/workflow.test.js test/job-workflows.test.js test/event-mentorship-workflows.test.js test/donations-content-workflows.test.js test/e2e-workflows.test.js",
+    "test": "node --test test/workflow.test.js test/job-workflows.test.js test/event-mentorship-workflows.test.js test/donations-content-workflows.test.js test/e2e-workflows.test.js test/numberTheory.test.js test/verification-workflows.test.js test/independentMath.test.js test/verification-e2e-workflow.test.js test/concurrency-allocation.test.js",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
     "db:verify": "node src/verify-db.js",
