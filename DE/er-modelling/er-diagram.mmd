@@ -1,0 +1,163 @@
+erDiagram
+    ROLE ||--o{ USER : "categorizes"
+    USER ||--o| ALUMNI_PROFILE : "has"
+    USER ||--o{ JOB : "posts"
+    USER ||--o{ JOB_APPLICATION : "submits"
+    JOB ||--o{ JOB_APPLICATION : "receives"
+    USER ||--o{ EVENT : "organizes"
+    USER ||--o{ EVENT_REGISTRATION : "books"
+    EVENT ||--o{ EVENT_REGISTRATION : "contains"
+    USER ||--o{ MENTORSHIP_REQUEST : "initiates (student)"
+    USER ||--o{ MENTORSHIP_REQUEST : "receives (mentor)"
+    USER ||--o{ DONATION_CAMPAIGN : "creates"
+    DONATION_CAMPAIGN ||--o{ DONATION_TRANSACTION : "accumulates"
+    USER ||--o{ DONATION_TRANSACTION : "contributes"
+    USER ||--o{ SUCCESS_STORY : "authors"
+
+    ROLE {
+        int id PK "Autoincrement primary key"
+        string name UK "Unique role name (ADMIN, ALUMNI, STUDENT)"
+        datetime createdAt "Timestamp of creation"
+    }
+
+    USER {
+        int id PK "Autoincrement primary key"
+        string email UK "Unique lowercase user email"
+        string passwordHash "Bcrypt encrypted password hash"
+        int roleId FK "Foreign key referencing Role(id)"
+        boolean isActive "Active account flag (default true)"
+        datetime createdAt "Account creation timestamp"
+        datetime updatedAt "Last modification timestamp"
+    }
+
+    ALUMNI_PROFILE {
+        int id PK "Autoincrement primary key"
+        int userId FK,UK "Unique foreign key referencing User(id)"
+        string fullName "Full legal / display name"
+        int graduationYear "Graduation cohort year"
+        string department "Academic discipline / major"
+        string currentJobTitle "Current professional title"
+        string currentCompany "Current employer / organisation"
+        string bio "Biography and personal statement"
+        string linkedinUrl "Verified LinkedIn profile link"
+        datetime createdAt "Profile creation timestamp"
+        datetime updatedAt "Profile modification timestamp"
+    }
+
+    SESSION {
+        string sid PK "Session identifier (VarChar)"
+        json sess "Serialized JSON session data"
+        datetime expire "Session expiration timestamp"
+    }
+
+    JOB {
+        int id PK "Autoincrement primary key"
+        string title "Job or internship title"
+        string description "Full position description"
+        string company "Hiring organization name"
+        string location "Job location or Remote"
+        string employmentType "Full-time, Part-time, Internship, Contract"
+        string experienceLevel "Entry-level, Mid-level, Senior, Lead"
+        int salaryMin "Minimum compensation amount"
+        int salaryMax "Maximum compensation amount"
+        datetime applicationDeadline "Final application timestamp"
+        boolean isActive "Active listing status"
+        int createdById FK "User ID of alumnus/admin poster"
+        datetime createdAt "Posting creation timestamp"
+        datetime updatedAt "Posting update timestamp"
+    }
+
+    JOB_APPLICATION {
+        int id PK "Autoincrement primary key"
+        int jobId FK "Foreign key referencing Job(id)"
+        int applicantId FK "Foreign key referencing User(id)"
+        string coverLetter "Candidate introduction note"
+        string resumeUrl "URL to candidate CV / resume PDF"
+        string status "Status: PENDING, REVIEWED, ACCEPTED, REJECTED"
+        datetime appliedAt "Application submission timestamp"
+        datetime updatedAt "Status modification timestamp"
+    }
+
+    EVENT {
+        int id PK "Autoincrement primary key"
+        string title "Event title"
+        string description "Detailed event description"
+        string location "Physical venue or virtual meeting link"
+        datetime startDate "Event start timestamp"
+        datetime endDate "Event conclusion timestamp"
+        datetime registrationDeadline "Registration cut-off timestamp"
+        int capacity "Maximum attendee capacity"
+        boolean isActive "Event active / published flag"
+        int createdById FK "User ID of event organizer"
+        datetime createdAt "Event creation timestamp"
+        datetime updatedAt "Event update timestamp"
+    }
+
+    EVENT_REGISTRATION {
+        int id PK "Autoincrement primary key"
+        int eventId FK "Foreign key referencing Event(id)"
+        int userId FK "Foreign key referencing User(id)"
+        string status "Status: REGISTERED, CANCELLED, ATTENDED"
+        datetime registeredAt "Registration timestamp"
+        datetime updatedAt "Status update timestamp"
+    }
+
+    MENTORSHIP_REQUEST {
+        int id PK "Autoincrement primary key"
+        int studentId FK "Foreign key referencing User(id) as student"
+        int mentorId FK "Foreign key referencing User(id) as mentor"
+        string message "Mentorship introduction note"
+        string status "Status: PENDING, ACCEPTED, REJECTED, COMPLETED"
+        datetime createdAt "Request creation timestamp"
+        datetime updatedAt "Status update timestamp"
+    }
+
+    DONATION_CAMPAIGN {
+        int id PK "Autoincrement primary key"
+        string title "Campaign title / initiative"
+        string description "Purpose and fund allocation details"
+        decimal targetAmount "Fundraising goal in INR (Decimal 14,2)"
+        string currency "Currency code (default INR)"
+        datetime startDate "Campaign start timestamp"
+        datetime endDate "Campaign conclusion timestamp"
+        boolean isActive "Campaign status flag"
+        int createdById FK "User ID of campaign creator"
+        datetime createdAt "Campaign creation timestamp"
+        datetime updatedAt "Campaign update timestamp"
+    }
+
+    DONATION_TRANSACTION {
+        int id PK "Autoincrement primary key"
+        int campaignId FK "Foreign key referencing DonationCampaign(id)"
+        int donorId FK "Foreign key referencing User(id)"
+        decimal amount "Donated amount (Decimal 14,2)"
+        string currency "Currency code (default INR)"
+        string status "Status: PENDING, COMPLETED, FAILED, REFUNDED"
+        string paymentProvider "Payment gateway provider (e.g. RAZORPAY)"
+        string providerOrderId "Gateway order identifier"
+        string providerPaymentId UK "Gateway payment identifier (Unique)"
+        datetime createdAt "Transaction initiation timestamp"
+        datetime updatedAt "Transaction update timestamp"
+    }
+
+    SUCCESS_STORY {
+        string id PK "Universally Unique Identifier (UUID)"
+        string title "Story headline"
+        string content "Full biographical / achievement article"
+        string imageUrl "Cover image URL"
+        int authorId FK "User ID of author alumnus"
+        boolean isPublished "Editorial publication status"
+        datetime publishedAt "Editorial publication timestamp"
+        datetime createdAt "Submission timestamp"
+        datetime updatedAt "Update timestamp"
+    }
+
+    FEEDBACK {
+        int id PK "Autoincrement primary key"
+        string category "Feedback category (GENERAL, CURRICULUM, etc.)"
+        string subject "Feedback subject line"
+        int rating "Numeric rating (1 to 5)"
+        string message "Detailed suggestions or comments"
+        string status "Status: PENDING, REVIEWED, RESOLVED"
+        datetime createdAt "Submission timestamp"
+    }
