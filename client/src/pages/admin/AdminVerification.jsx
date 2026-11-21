@@ -11,9 +11,10 @@ export default function AdminVerification() {
   const [departmentFilter, setDepartmentFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [selectedApplicant, setSelectedApplicant] = useState(null)
-  const [actionDialog, setActionDialog] = useState(null) // { type: 'APPROVE' | 'REJECT', applicant: object }
+  const [actionDialog, setActionDialog] = useState(null) // { type: 'APPROVE' | 'REJECT' | 'REVOKE', applicant: object }
+  const [revokeReason, setRevokeReason] = useState('')
   const [actionLoading, setActionLoading] = useState(false)
-  const [notification, setNotification] = useState(null) // { type: 'success' | 'error' | 'info', message: string }
+  const [notification, setNotification] = useState(null) // { type: 'success' | 'error' | 'info', message: string, details?: object }
 
   // Load registered alumni candidates from the directory API
   const fetchApplicants = useCallback(() => {
@@ -40,17 +41,20 @@ export default function AdminVerification() {
       !search ||
       applicant.fullName?.toLowerCase().includes(search.toLowerCase()) ||
       applicant.department?.toLowerCase().includes(search.toLowerCase()) ||
-      applicant.currentCompany?.toLowerCase().includes(search.toLowerCase())
+      applicant.currentCompany?.toLowerCase().includes(search.toLowerCase()) ||
+      applicant.verification?.code?.toLowerCase().includes(search.toLowerCase())
 
     const matchesDept =
       !departmentFilter || applicant.department === departmentFilter
 
-    // In current DB schema, active alumni are role: ALUMNI.
-    // If future status field is added, this seamlessly respects statusFilter.
+    const isVerified = applicant.verification?.status === 'VERIFIED'
+    const isRevoked = applicant.verification?.status === 'REVOKED'
+
     const matchesStatus =
       statusFilter === 'ALL' ||
-      (statusFilter === 'ACTIVE' && applicant.role === 'ALUMNI') ||
-      (statusFilter === 'PENDING' && applicant.role === 'STUDENT')
+      (statusFilter === 'VERIFIED' && isVerified) ||
+      (statusFilter === 'REVOKED' && isRevoked) ||
+      (statusFilter === 'UNVERIFIED' && !isVerified && !isRevoked)
 
     return matchesSearch && matchesDept && matchesStatus
   })
@@ -60,46 +64,52 @@ export default function AdminVerification() {
     new Set(alumni.map((a) => a.department).filter(Boolean))
   )
 
-  // Handle Approve / Reject Confirmation Action
+  // Handle Approve / Reject / Revoke Confirmation Action
   const handleConfirmAction = async () => {
     if (!actionDialog) return
     const { type, applicant } = actionDialog
     setActionLoading(true)
 
-    /*
-     * ARCHITECTURAL NOTE ON API DEPENDENCY:
-     * As per docs/database-and-api-design.md Section 6 and schema.prisma,
-     * administrative endpoints (e.g. PUT /api/admin/users/:id/verification or
-     * PATCH /api/admin/alumni/:id/status) are pending backend definition by Aniruddha.
-     * We attempt the REST standard candidate endpoint with graceful fallback
-     * to prevent breaking the client interface.
-     */
     try {
-      // Graceful attempt to candidate admin endpoint
-      await apiRequest(`/admin/alumni/${applicant.id || applicant.userId}/verify`, {
+      const endpoint = `/admin/alumni/${applicant.id}/verify`
+      const body = {
+        action: type,
+        status: type === 'APPROVE' ? 'APPROVED' : type === 'REVOKE' ? 'REVOKED' : 'REJECTED',
+        reason: type === 'REVOKE' ? revokeReason.trim() : undefined,
+        notes: `Administrative verification decision: ${type} by administrator.`,
+      }
+
+      const res = await apiRequest(endpoint, {
         method: 'POST',
-        body: JSON.stringify({
-          action: type,
-          status: type === 'APPROVE' ? 'APPROVED' : 'REJECTED',
-          notes: `Administrative verification decision: ${type} by administrator.`,
-        }),
+        body: JSON.stringify(body),
       })
 
-      setNotification({
-        type: 'success',
-        message: `Successfully processed ${type.toLowerCase()} for ${applicant.fullName}.`,
-      })
+      if (type === 'APPROVE') {
+        setNotification({
+          type: 'success',
+          message: `Successfully verified ${applicant.fullName}! Mathematical Verification Identifier: ${res.data?.verificationIdentifier}`,
+          details: res.data
+        })
+      } else if (type === 'REVOKE') {
+        setNotification({
+          type: 'success',
+          message: `Verification revoked for ${applicant.fullName} (${applicant.verification?.code || 'Credential'}).`,
+        })
+      } else {
+        setNotification({
+          type: 'info',
+          message: `Application rejected for ${applicant.fullName}.`,
+        })
+      }
+
       setActionDialog(null)
+      setRevokeReason('')
       fetchApplicants()
-    } catch {
-      // Documented API dependency graceful handling:
-      // When backend admin endpoint returns 404 / 501 (pending backend implementation),
-      // we notify the admin clearly without crashing.
+    } catch (err) {
       setNotification({
-        type: 'info',
-        message: `Verification decision recorded for ${applicant.fullName} (${type}). Pending backend API contract confirmation with Aniruddha.`,
+        type: 'error',
+        message: err.message || `Failed to process ${type.toLowerCase()} action.`,
       })
-      setActionDialog(null)
     } finally {
       setActionLoading(false)
     }
@@ -125,53 +135,89 @@ export default function AdminVerification() {
       ),
     },
     {
-      header: 'Graduation Year',
+      header: 'Batch / Year',
       key: 'graduationYear',
-      render: (row) => (row.graduationYear ? `Class of ${row.graduationYear}` : '—'),
-    },
-    {
-      header: 'Current Employment',
-      key: 'currentCompany',
       render: (row) => (
-        <span className="text-xs text-slate-600">
-          {row.currentJobTitle || 'Alumnus'}
-          {row.currentCompany ? ` at ${row.currentCompany}` : ''}
+        <span className="font-mono text-xs">
+          {row.graduationYear ? `Class of ${row.graduationYear}` : '—'}
         </span>
       ),
     },
     {
-      header: 'Verification Status',
-      key: 'status',
+      header: 'Current Role & Org',
+      key: 'currentCompany',
       render: (row) => (
-        <StatusBadge
-          status={row.role === 'ALUMNI' ? 'APPROVED' : 'PENDING'}
-          label={row.role === 'ALUMNI' ? 'Verified Member' : 'Pending Review'}
-        />
+        <div className="text-xs">
+          <span className="font-medium text-slate-800">
+            {row.currentJobTitle || 'Member'}
+          </span>
+          {row.currentCompany && (
+            <span className="text-slate-500"> @ {row.currentCompany}</span>
+          )}
+        </div>
       ),
+    },
+    {
+      header: 'Verification Identifier',
+      key: 'verificationCode',
+      render: (row) => (
+        row.verification?.code ? (
+          <div className="flex flex-col">
+            <span className="font-mono text-xs font-bold text-indigo-700">
+              {row.verification.code}
+            </span>
+            <span className="text-[10px] text-slate-400">
+              {row.verification.verifiedAt ? new Date(row.verification.verifiedAt).toLocaleDateString() : ''}
+            </span>
+          </div>
+        ) : (
+          <span className="text-xs text-slate-400 font-mono">Unassigned</span>
+        )
+      )
+    },
+    {
+      header: 'Status',
+      key: 'status',
+      render: (row) => {
+        if (row.verification?.status === 'VERIFIED') {
+          return <StatusBadge status="ACTIVE" label="VERIFIED" />
+        }
+        if (row.verification?.status === 'REVOKED') {
+          return <StatusBadge status="REJECTED" label="REVOKED" />
+        }
+        return <StatusBadge status="SUBMITTED" label="PENDING" />
+      },
     },
     {
       header: 'Actions',
       key: 'actions',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedApplicant(row)}
-            className="rounded border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-          >
-            Details
-          </button>
-          <button
-            type="button"
-            onClick={() => setActionDialog({ type: 'APPROVE', applicant: row })}
-            className="rounded bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-          >
-            Approve
-          </button>
+          {row.verification?.status !== 'VERIFIED' ? (
+            <button
+              type="button"
+              onClick={() => setActionDialog({ type: 'APPROVE', applicant: row })}
+              className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
+            >
+              Verify
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setRevokeReason('')
+                setActionDialog({ type: 'REVOKE', applicant: row })
+              }}
+              className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+            >
+              Revoke
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => setActionDialog({ type: 'REJECT', applicant: row })}
-            className="rounded border border-rose-300 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+            className="rounded-lg bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100"
           >
             Reject
           </button>
@@ -180,115 +226,132 @@ export default function AdminVerification() {
     },
   ]
 
+  // KPI Calculations
+  const totalVerified = alumni.filter((a) => a.verification?.status === 'VERIFIED').length
+  const totalRevoked = alumni.filter((a) => a.verification?.status === 'REVOKED').length
+  const totalPending = alumni.filter((a) => !a.verification || a.verification.status === 'PENDING').length
+
   return (
     <div className="space-y-6">
-      {/* Page Title */}
+      {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">
-            Workflow Management
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Alumni Registration Verification
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Review applicant institutional records, confirm degree qualifications, and grant alumni portal credentials.
+          <h2 className="text-xl font-bold text-slate-900">
+            Alumni Verification & Affine Modular Registry
+          </h2>
+          <p className="text-sm text-slate-500">
+            Review applicant cohorts, allocate mathematical verification identifiers, and manage credentials.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setLoading(true)
-            fetchApplicants()
-          }}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
-        >
-          <span>↻</span>
-          <span>Refresh Queue</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={fetchApplicants}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            ↻ Refresh List
+          </button>
+        </div>
       </div>
 
-      {/* Notifications */}
+      {/* Notification Banner */}
       {notification && (
         <div
           role="status"
-          className={`flex items-center justify-between rounded-lg p-4 text-sm ${
+          className={`flex items-start justify-between rounded-xl border p-4 text-sm ${
             notification.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
               : notification.type === 'error'
-              ? 'bg-rose-50 text-rose-800 border border-rose-200'
-              : 'bg-indigo-50 text-indigo-800 border border-indigo-200'
+              ? 'border-rose-200 bg-rose-50 text-rose-800'
+              : 'border-sky-200 bg-sky-50 text-sky-800'
           }`}
         >
-          <span>{notification.message}</span>
+          <div>
+            <p className="font-semibold">{notification.message}</p>
+            {notification.details && (
+              <div className="mt-2 space-y-1">
+                <p className="font-mono text-xs text-emerald-900">
+                  Identifier: <span className="font-bold">{notification.details.verificationIdentifier}</span> • Sequence validated over prime modulus 1,000,003
+                </p>
+                {notification.details.publicVerificationToken && (
+                  <div className="mt-1 flex items-center gap-2 rounded bg-emerald-100/80 p-2 font-mono text-xs text-emerald-900">
+                    <span>Token: <span className="select-all font-bold">{notification.details.publicVerificationToken}</span></span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(notification.details.publicVerificationToken);
+                        alert('Secure Public Verification Token copied to clipboard!');
+                      }}
+                      className="rounded border border-emerald-300 bg-white px-2 py-0.5 text-[10px] font-sans font-semibold text-emerald-800 hover:bg-emerald-50"
+                    >
+                      Copy Token
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setNotification(null)}
-            className="text-xs font-bold uppercase tracking-wider hover:opacity-75"
+            className="text-xs font-bold hover:opacity-75"
           >
-            Dismiss
+            ✕
           </button>
         </div>
       )}
 
-      {/* KPI Stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
-          label="Total Applicant Pool"
-          value={alumni.length}
-          note="Registered candidate accounts in roster"
+          label="Total Registered"
+          value={loading ? '…' : alumni.length}
           icon="👥"
         />
         <StatCard
-          label="Verified Status"
-          value={alumni.filter((a) => a.role === 'ALUMNI').length}
-          note="Accounts currently holding verified alumni status"
+          label="Verified Alumni"
+          value={loading ? '…' : totalVerified}
           icon="✅"
-          change="Verified"
           changeType="positive"
         />
         <StatCard
-          label="Verification Dependency"
-          value="API Spec"
-          note="Awaiting Aniruddha's admin endpoint contract"
+          label="Pending Review"
+          value={loading ? '…' : totalPending}
           icon="⏳"
-          change="Pending PR"
           changeType="neutral"
+        />
+        <StatCard
+          label="Revoked Credentials"
+          value={loading ? '…' : totalRevoked}
+          icon="⚠️"
+          changeType="negative"
         />
       </div>
 
-      {/* Search & Filter Controls */}
-      <AdminCard>
-        <div className="grid gap-4 sm:grid-cols-3">
+      {/* Filters and Search Bar */}
+      <AdminCard title="Cohort Search & Filters">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label
-              htmlFor="verification-search"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-600"
-            >
-              Search Applicant
+            <label className="block text-xs font-semibold text-slate-600 uppercase">
+              Search by Keyword or ALU Code
             </label>
             <input
-              id="verification-search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Filter by name, department, or company…"
-              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-800 outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+              placeholder="Name, company, department, or ALU-XXXXXX"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="verification-dept"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-600"
-            >
-              Department Filter
+            <label className="block text-xs font-semibold text-slate-600 uppercase">
+              Department
             </label>
             <select
-              id="verification-dept"
               value={departmentFilter}
               onChange={(e) => setDepartmentFilter(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs outline-none focus:border-indigo-600"
             >
               <option value="">All Departments</option>
               {departments.map((dept) => (
@@ -300,48 +363,35 @@ export default function AdminVerification() {
           </div>
 
           <div>
-            <label
-              htmlFor="verification-status"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-600"
-            >
-              Status Filter
+            <label className="block text-xs font-semibold text-slate-600 uppercase">
+              Verification Status
             </label>
             <select
-              id="verification-status"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100"
+              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs outline-none focus:border-indigo-600"
             >
-              <option value="ALL">All Records</option>
-              <option value="ACTIVE">Verified Alumni</option>
-              <option value="PENDING">Pending Review</option>
+              <option value="ALL">All Statuses</option>
+              <option value="VERIFIED">Verified</option>
+              <option value="UNVERIFIED">Pending / Unverified</option>
+              <option value="REVOKED">Revoked</option>
             </select>
           </div>
         </div>
       </AdminCard>
 
-      {/* Verification Queue Table */}
+      {/* Applicants Table */}
       <AdminCard
-        title="Applicant Queue"
-        subtitle={`Showing ${filteredApplicants.length} of ${alumni.length} applicants`}
+        title="Alumni Applicants Cohort"
+        subtitle={`Showing ${filteredApplicants.length} applicants matching active filters`}
       >
-        {error ? (
-          <div className="rounded-lg bg-rose-50 p-4 text-sm text-rose-800">
-            {error}
-          </div>
-        ) : loading ? (
-          <div className="py-12 text-center">
-            <p className="text-sm font-medium text-slate-600" role="status">
-              Loading verification applicants from database…
-            </p>
-          </div>
-        ) : (
-          <AdminTable
-            columns={columns}
-            data={filteredApplicants}
-            emptyMessage="No applicants match the selected criteria."
-          />
-        )}
+        <AdminTable
+          columns={columns}
+          data={filteredApplicants}
+          loading={loading}
+          error={error}
+          emptyMessage="No applicants matching the current filter criteria."
+        />
       </AdminCard>
 
       {/* Applicant Detail Modal */}
@@ -355,62 +405,58 @@ export default function AdminVerification() {
           <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
             <div className="flex items-start justify-between border-b border-slate-100 pb-4">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-indigo-700">
-                  Applicant Dossier
-                </span>
-                <h3 className="text-xl font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-slate-900">
                   {selectedApplicant.fullName}
                 </h3>
+                <p className="text-xs text-slate-500">
+                  {selectedApplicant.department || 'Department not specified'} • Class of{' '}
+                  {selectedApplicant.graduationYear || 'N/A'}
+                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedApplicant(null)}
-                className="rounded-lg p-1 text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 ✕
               </button>
             </div>
 
-            <div className="mt-4 space-y-3 text-sm">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <span className="text-xs text-slate-500">Graduation Year:</span>
-                  <p className="font-semibold text-slate-800">
-                    {selectedApplicant.graduationYear || 'Not provided'}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500">Department:</span>
-                  <p className="font-semibold text-slate-800">
-                    {selectedApplicant.department || 'Not provided'}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500">Current Position:</span>
-                  <p className="font-semibold text-slate-800">
-                    {selectedApplicant.currentJobTitle || 'Not listed'}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500">Organization:</span>
-                  <p className="font-semibold text-slate-800">
-                    {selectedApplicant.currentCompany || 'Not listed'}
-                  </p>
-                </div>
+            <div className="mt-4 space-y-3 text-xs text-slate-700">
+              <div>
+                <span className="font-semibold text-slate-500">Professional Designation:</span>
+                <p className="mt-0.5 text-sm font-medium text-slate-900">
+                  {selectedApplicant.currentJobTitle || 'Member'}
+                  {selectedApplicant.currentCompany && ` @ ${selectedApplicant.currentCompany}`}
+                </p>
               </div>
 
+              {selectedApplicant.verification?.code && (
+                <div className="rounded-xl bg-indigo-50/80 p-3 border border-indigo-100">
+                  <span className="font-semibold text-indigo-900 uppercase tracking-wider text-[10px]">
+                    Verification Credential
+                  </span>
+                  <p className="mt-0.5 font-mono text-sm font-bold text-indigo-700">
+                    {selectedApplicant.verification.code}
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    Status: {selectedApplicant.verification.status} • Verified on {new Date(selectedApplicant.verification.verifiedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
+
               {selectedApplicant.bio && (
-                <div className="mt-3">
-                  <span className="text-xs text-slate-500">Biography:</span>
-                  <p className="mt-1 rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-700">
+                <div>
+                  <span className="font-semibold text-slate-500">Background Statement:</span>
+                  <p className="mt-0.5 rounded-lg bg-slate-50 p-2.5 leading-relaxed text-slate-600">
                     {selectedApplicant.bio}
                   </p>
                 </div>
               )}
 
               {selectedApplicant.linkedinUrl && (
-                <div className="mt-2">
-                  <span className="text-xs text-slate-500">LinkedIn Profile:</span>
+                <div>
+                  <span className="font-semibold text-slate-500">LinkedIn Profile:</span>
                   <p className="mt-0.5">
                     <a
                       href={selectedApplicant.linkedinUrl}
@@ -433,17 +479,32 @@ export default function AdminVerification() {
               >
                 Close
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const applicant = selectedApplicant
-                  setSelectedApplicant(null)
-                  setActionDialog({ type: 'APPROVE', applicant })
-                }}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
-              >
-                Approve Applicant
-              </button>
+              {selectedApplicant.verification?.status !== 'VERIFIED' ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const applicant = selectedApplicant
+                    setSelectedApplicant(null)
+                    setActionDialog({ type: 'APPROVE', applicant })
+                  }}
+                  className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Verify Applicant
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const applicant = selectedApplicant
+                    setSelectedApplicant(null)
+                    setRevokeReason('')
+                    setActionDialog({ type: 'REVOKE', applicant })
+                  }}
+                  className="rounded-lg bg-amber-600 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-700"
+                >
+                  Revoke Verification
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -460,7 +521,7 @@ export default function AdminVerification() {
         </div>
       )}
 
-      {/* Confirmation Dialog for Approve / Reject */}
+      {/* Confirmation Dialog for Approve / Revoke / Reject */}
       {actionDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -472,16 +533,26 @@ export default function AdminVerification() {
             <h3 className="text-lg font-bold text-slate-900">
               {actionDialog.type === 'APPROVE'
                 ? 'Confirm Alumni Verification'
+                : actionDialog.type === 'REVOKE'
+                ? 'Confirm Credential Revocation'
                 : 'Confirm Registration Rejection'}
             </h3>
             <p className="mt-2 text-sm text-slate-600">
               {actionDialog.type === 'APPROVE' ? (
                 <>
-                  Are you sure you want to approve{' '}
+                  Are you sure you want to verify{' '}
                   <span className="font-semibold text-slate-900">
                     {actionDialog.applicant.fullName}
                   </span>
-                  ? This will elevate their account to verified Alumni status and activate community privileges.
+                  ? This will allocate a unique sequence number and generate a mathematically derived verification identifier (ALU-XXXXXX).
+                </>
+              ) : actionDialog.type === 'REVOKE' ? (
+                <>
+                  Are you sure you want to revoke verification for{' '}
+                  <span className="font-semibold text-slate-900">
+                    {actionDialog.applicant.fullName}
+                  </span>
+                  ? Public verification lookups will immediately reflect this revocation.
                 </>
               ) : (
                 <>
@@ -489,10 +560,25 @@ export default function AdminVerification() {
                   <span className="font-semibold text-slate-900">
                     {actionDialog.applicant.fullName}
                   </span>
-                  ? The applicant will be notified to review their academic submission.
+                  ? The applicant will be notified.
                 </>
               )}
             </p>
+
+            {actionDialog.type === 'REVOKE' && (
+              <div className="mt-4">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Reason for Revocation (Optional):
+                </label>
+                <textarea
+                  value={revokeReason}
+                  onChange={(e) => setRevokeReason(e.target.value)}
+                  placeholder="e.g. Inaccurate academic records or disciplinary flag"
+                  rows="2"
+                  className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-xs outline-none focus:border-amber-600"
+                />
+              </div>
+            )}
 
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -510,13 +596,17 @@ export default function AdminVerification() {
                 className={`rounded-lg px-4 py-2 text-xs font-semibold text-white disabled:opacity-50 ${
                   actionDialog.type === 'APPROVE'
                     ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : actionDialog.type === 'REVOKE'
+                    ? 'bg-amber-600 hover:bg-amber-700'
                     : 'bg-rose-600 hover:bg-rose-700'
                 }`}
               >
                 {actionLoading
                   ? 'Processing…'
                   : actionDialog.type === 'APPROVE'
-                  ? 'Confirm Approval'
+                  ? 'Confirm Verification'
+                  : actionDialog.type === 'REVOKE'
+                  ? 'Confirm Revocation'
                   : 'Confirm Rejection'}
               </button>
             </div>

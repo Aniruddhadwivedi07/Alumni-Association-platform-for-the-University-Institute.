@@ -45,6 +45,8 @@ model User {
   successStories             SuccessStory[]        @relation("StoryAuthor")
   verificationsConducted     AlumniVerification[]  @relation("VerifierAdmin")
   verificationsRevoked       AlumniVerification[]  @relation("RevokerAdmin")
+
+  @@index([roleId])
 }
 
 model AlumniProfile {
@@ -61,6 +63,8 @@ model AlumniProfile {
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   verification    AlumniVerification?
+
+  @@index([department, graduationYear])
 }
 
 model Session {

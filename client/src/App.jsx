@@ -27,6 +27,7 @@ import Stories from './pages/stories/Stories'
 import StoryDetails from './pages/stories/StoryDetails'
 import SubmitStory from './pages/stories/SubmitStory'
 import Feedback from './pages/feedback/Feedback'
+import PublicVerification from './pages/PublicVerification'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminVerification from './pages/admin/AdminVerification'
@@ -51,6 +52,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/directory" element={<Directory />} />
         <Route path="/feedback" element={<Feedback />} />
+        <Route path="/verify" element={<PublicVerification />} />
+        <Route path="/verification" element={<PublicVerification />} />
         <Route path="/donations" element={<Campaigns />} />
         <Route path="/donations/:campaignId" element={<CampaignDetails />} />
         <Route path="/stories" element={<Stories />} />

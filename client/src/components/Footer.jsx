@@ -23,6 +23,9 @@ export default function Footer() {
           <Link to="/stories" className="font-semibold text-indigo-700 hover:underline">
             Success Stories
           </Link>
+          <Link to="/verify" className="font-semibold text-indigo-700 hover:underline">
+            Verify Alumni
+          </Link>
           <Link to="/feedback" className="font-semibold text-indigo-700 hover:underline">
             Feedback
           </Link>
